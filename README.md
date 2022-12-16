@@ -1,3 +1,10 @@
+https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-eks-kubeflow-tutorials-cpu-training.html
+This repo shows how to train a model on CPU instances in a Kubernetes cluster by using Kubeflow/TFJob training operator and a Deep Learning Container. 
+
+TFJob is the Kubeflow implementation of Kubernetes custom resource that is used to run (distributed) TensorFlow training jobs on Kubernetes.
+
+This tutorial guides you through training a classification model on MNIST with Keras in a single node CPU instance running a container from Deep Learning Containers managed by Kubeflow.
+
 
 1. Create Kind cluster with Kubernetes v1.25.2
 ```
