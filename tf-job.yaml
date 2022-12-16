@@ -1,0 +1,22 @@
+apiVersion: kubeflow.org/v1
+kind: TFJob
+metadata:
+  name: tensorflow-training
+spec:
+  tfReplicaSpecs:
+    Worker:
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          containers:
+            - name: tensorflow
+              command:
+              - python
+              - /opt/model.py
+              - --tf-export-dir=s3://tf-models/mnist-model
+              - --train_steps=200
+              - --batch_size=100
+              - --learning_rate=0.01
