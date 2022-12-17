@@ -16,15 +16,15 @@ spec:
             command:
             - python
             - /opt/model.py
-            - --model_file="/tf-models/mnist"
+            - --model_folder=/tmp/mnist
             - --train_steps=1
             - --batch_size=5
             - --learning_rate=0.01
-            image: foxy7887/mnist-model:v1
+            image: foxy7887/mnist-model:v2
             workingDir: /opt
             volumeMounts:
             - name: vol 
-              mountPath: /tf-models
+              mountPath: /tmp
           volumes:
             - name: vol
               persistentVolumeClaim:

@@ -111,6 +111,10 @@ def main(argv=None):
   print("Test loss:", score[0])
   print("Test accuracy:", score[1])
 
+  # Confirmation
+  model.summary()
+
+  logging.info('saving the model to %s', args.model_folder)
   model.save(args.model_folder)
 
 if __name__ == '__main__':

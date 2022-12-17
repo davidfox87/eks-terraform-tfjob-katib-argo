@@ -9,7 +9,6 @@ This tutorial guides you through training a classification model on MNIST with K
 1. Create Kind cluster with Kubernetes v1.25.2
 ```
 kind create cluster --config kind-config.yaml
-kind create cluster --image kindest/node:v1.25.2
 echo -e "\nKind cluster has been created\n"
 ```
 
@@ -18,22 +17,15 @@ echo -e "\nKind cluster has been created\n"
 kubectl config use-context kind-kind
 ```
 
-3. Wait until Kubernetes Nodes will be ready.
-```
-TIMEOUT=30m
-kubectl wait --for=condition=ready --timeout=${TIMEOUT} node kind-control-plane
 
-kubectl get nodes
-```
-
-4. Deploy TFJob operator standalone
+3. Deploy TFJob operator standalone
 ```
 kubectl apply -k "github.com/kubeflow/training-operator/manifests/overlays/standalone?ref=v1.5.0"
 ```
 
 5. Containerize the MNIST classifier code. Build and push the docker image to ECR by running ```./build-and-push.sh``` in the the mnist folder.
 
-6. 
+6. create the secret to be referenced by imagePullSecrets in the tf-job.yaml
 ```
 kubectl create secret docker-registry regcred \
   --docker-server=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com \
@@ -45,10 +37,11 @@ kubectl create secret docker-registry regcred \
 
 6. To start training, deploy the TFJob configuration file using kubectl.
 ```
-kubectl apply -f tf.yaml
+kubectl apply -f pvc.yaml
+kubectl apply -f tf-job.yaml
 ```
 
-7. watch the training process
+7. Watch the training process
 ```
 kubectl describe tfjob tensorflow-training
 kubectl logs --follow tensorflow-training-worker-0
@@ -65,6 +58,7 @@ kubectl delete tfjob tensorflow-training
 kubectl exec --stdin --tty tensorflow-training-worker-0 -- /bin/bash
 ```
 
+10. scp -i $(minikube ssh-key) . docker@$(minikube ip):/tmp/hostpath-provisioner/default/pvc-mnist/mnist 
 # Hyperparameter tuning
 
 7. Deploy Katib components.

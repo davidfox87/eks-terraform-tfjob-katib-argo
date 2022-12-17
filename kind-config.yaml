@@ -3,6 +3,6 @@ kind: Cluster
 nodes:
   - role: control-plane
     extraMounts:
-      - hostPath: /Users/davidfox/tfjob-test
+      - hostPath: /tmp
         containerPath: /tf-models
     image: kindest/node:v1.23.0
