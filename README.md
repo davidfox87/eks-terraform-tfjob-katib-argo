@@ -94,5 +94,5 @@ $ kubectl get experiment tfjob-mnist -n kubeflow -o jsonpath='{range .status.cur
 ```
 
 ```
-kubectl logs random-example-2rmwkwx6-hkdwb -n kubeflow -c metrics-logger-and-collector
+kubectl logs --follow  random-example-2rmwkwx6-hkdwb -n kubeflow -c metrics-logger-and-collector
 ```

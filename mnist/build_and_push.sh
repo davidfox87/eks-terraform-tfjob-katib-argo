@@ -9,7 +9,7 @@
 
 #!/bin/bash -e
 
-docker login --username=foxy7887 -p xxx!
+docker login --username=foxy7887 -p xx!
 
 image_name=foxy7887/mnist-model
 image_tag=v12
