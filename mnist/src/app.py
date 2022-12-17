@@ -74,7 +74,6 @@ def main(argv=None):
   print(x_train.shape[0], "train samples")
   print(x_test.shape[0], "test samples")
 
-
   # convert class vectors to binary class matrices
   y_train = keras.utils.to_categorical(y_train, num_classes)
   y_test = keras.utils.to_categorical(y_test, num_classes)
@@ -113,20 +112,18 @@ def main(argv=None):
   """
   ## Evaluate the trained model
   """
-  # Confirmation
-  model.summary()
-
   # logging.info('saving the model to %s', args.model_folder)
   # model.save(args.model_folder)
   acc = model.evaluate(x_test, y_test, verbose=0)
-  logging.info('\n{{metricName: accuracy, metricValue: {:.4f}}}').format(acc)
+  logging.info('metricName: accuracy, metricValue: {accuracy:.4f}}}'.format(accuracy=acc))
 
   return model
 
 def eval_model(model, test_X, test_y):
   # predictions = model.predict(test_X)
   acc = model.evaluate(test_X, test_y, verbose=0)
-  print("\nTest accuracy: %.1f%%" % (100.0 * acc))
+  logging.info('\n{{metricName: accuracy, metricValue: {:.4f}}}').format(acc)
+
 
   return acc
 

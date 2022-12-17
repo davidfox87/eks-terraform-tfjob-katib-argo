@@ -10,6 +10,9 @@ spec:
     objectiveMetricName: accuracy
   algorithm:
     algorithmName: random
+  metricsCollectorSpec:
+    collector:
+      kind: StdOut
   parallelTrialCount: 3
   maxTrialCount: 12
   maxFailedTrialCount: 3
@@ -54,7 +57,7 @@ spec:
                     - --train_steps=2
                     - "--learning_rate=${trialParameters.learningRate}"
                     - "--batch_size=${trialParameters.batchSize}"
-                    image: foxy7887/mnist-model:v12
+                    image: foxy7887/mnist-model:v13
                     workingDir: /opt
                 restartPolicy: Never
 
