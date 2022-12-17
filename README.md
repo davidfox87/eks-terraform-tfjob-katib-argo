@@ -1,9 +1,12 @@
-# Training Tensorflow/Keras Deep Learning Models using TFJob on Kubernetes clusters
-This repo shows how to train a model on CPU instances in a Kubernetes cluster by using Kubeflow/TFJob training operator and a Deep Learning Container. 
+# Tuning and Training Tensorflow/Keras Deep Learning Models using TFJob and Katib on Kubernetes clusters
+This repo shows how to train a model on CPU instances in a Kubernetes cluster by using Kubeflow/TFJob training operator and Kubeflow/Katib and a Deep Learning Container. 
 
 TFJob is the Kubeflow implementation of Kubernetes custom resource that is used to run (distributed) TensorFlow training jobs on Kubernetes.
 
-This tutorial guides you through training a classification model on MNIST with Keras in a single node CPU instance running a container from Deep Learning Containers managed by Kubeflow.
+Katib is a Kubernetes-native project for automated machine learning (AutoML). Katib supports Hyperparameter Tuning, Early Stopping and Neural Architecture Search.
+
+
+This tutorial guides you through tuning and training a classification model on the MNIST dataset with Keras in a single node CPU instance running containerized training modules (Keras framework).
 
 
 1. Create Kind cluster with Kubernetes v1.25.2
@@ -18,21 +21,21 @@ kubectl config use-context kind-kind
 ```
 
 
-3. Deploy TFJob operator standalone
+3. Training Operators
+Deploy TFJob operator standalone 
 ```
 kubectl apply -k "github.com/kubeflow/training-operator/manifests/overlays/standalone?ref=v1.5.0"
 ```
 
+4. Hyperparameter Tuning
+Deploy Katib standalone components.
+```
+echo -e "\nDeploying Katib components\n"
+kubectl apply -k "github.com/kubeflow/katib.git/manifests/v1beta1/installs/katib-standalone?ref=master"
+```
+
 5. Containerize the MNIST classifier code. Build and push the docker image to ECR by running ```./build-and-push.sh``` in the the mnist folder.
 
-6. create the secret to be referenced by imagePullSecrets in the tf-job.yaml
-```
-kubectl create secret docker-registry regcred \
-  --docker-server=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com \
-  --docker-username=AWS \
-  --docker-password=$(aws ecr get-login-password) \
-  --namespace=default
-```
 
 
 6. To start training, deploy the TFJob configuration file using kubectl.
@@ -58,12 +61,37 @@ kubectl delete tfjob tensorflow-training
 kubectl exec --stdin --tty tensorflow-training-worker-0 -- /bin/bash
 ```
 
-# Hyperparameter tuning
-
-7. Deploy Katib components.
+10. Run Katib Experiment
+Create Hyperparameter Tuning Katib Experiment with random search algorithm using kubectl:
 ```
-echo -e "\nDeploying Katib components\n"
-kubectl apply -k "github.com/kubeflow/katib.git/manifests/v1beta1/installs/katib-standalone?ref=master"
+kubectl create -f example2.yaml 
+```
+
+The Experiment runs twelve training jobs (Trials) and tunes the following hyperparameters:
+
+    Learning Rate (lr).
+    Batch size (batch-size).
+
+After creating above example, check the Experiment status:
+```
+$ kubectl get experiment random -n kubeflow
+```
+
+Check the Suggestion status:
+```
+$ kubectl get suggestion -n kubeflow
+```
+
+Check the Trials statuses:
+```
+$ kubectl get trial -n kubeflow
+```
+$ kubectl get trial -n kubeflow
+```
+
+You can get the best hyperparameters with the following command:
+```
+$ kubectl get experiment random -n kubeflow -o jsonpath='{range .status.currentOptimalTrial.parameterAssignments[*]}{.name}: {.value}{"\n"}{end}'
 ```
 
 # Wait until all Katib pods are running.
