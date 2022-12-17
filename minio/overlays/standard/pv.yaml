@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minio-vol
+  labels:
+    type: local
+spec:
+  storageClassName: standard # this will be claimed by the local-minio/minio-s3-log-minio-s3-log-0 pod
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/data"
