@@ -55,11 +55,14 @@ spec:
               spec:
                 containers:
                   - name: tensorflow
-                    image: docker.io/kubeflowkatib/tf-mnist-with-summaries:latest
                     command:
-                      - "python"
-                      - "/opt/tf-mnist-with-summaries/mnist.py"
-                      - "--epochs=1"
-                      - "--learning-rate=${trialParameters.learningRate}"
-                      - "--batch-size=${trialParameters.batchSize}"
-                      - "--log-path=/mnist-with-summaries-logs"
+                    - python
+                    - /opt/model.py
+                    - --model_folder=/tmp/mnist
+                    - --train_steps=1
+                    - "--batch_size=${trialParameters.batchSize}"
+                    - "--learning_rate=${trialParameters.learningRate}"
+                    image: foxy7887/mnist-model:v2
+                    workingDir: /opt
+
+
