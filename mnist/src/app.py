@@ -20,10 +20,10 @@ import logging
 def parse_arguments(argv):
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--model_file', 
+  parser.add_argument('--model_folder', 
                       type=str, 
                       required=True, 
-                      help='Name of the model file.')
+                      help='Name of the model folder.')
   parser.add_argument('--train_steps',
                       type=int,
                       default=200,
@@ -111,7 +111,7 @@ def main(argv=None):
   print("Test loss:", score[0])
   print("Test accuracy:", score[1])
 
-  # model.save("path_to_my_model")
+  model.save(args.model_folder)
 
 if __name__ == '__main__':
   logging.basicConfig(level=logging.INFO)

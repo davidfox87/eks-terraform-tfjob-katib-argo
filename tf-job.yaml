@@ -16,8 +16,8 @@ spec:
             command:
             - python
             - /opt/model.py
-            - --model_file=s3://tf-models/mnist-model
-            - --train_steps=100
+            - --model_file="/tf-models/mnist"
+            - --train_steps=1
             - --batch_size=5
             - --learning_rate=0.01
             image: foxy7887/mnist-model:v1

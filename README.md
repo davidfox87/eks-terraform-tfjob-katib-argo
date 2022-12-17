@@ -8,6 +8,7 @@ This tutorial guides you through training a classification model on MNIST with K
 
 1. Create Kind cluster with Kubernetes v1.25.2
 ```
+kind create cluster --config kind-config.yaml
 kind create cluster --image kindest/node:v1.25.2
 echo -e "\nKind cluster has been created\n"
 ```
@@ -57,6 +58,11 @@ kubectl logs po/tensorflow-training-worker-0
 8. To remove the TFJob and associated pods
 ```
 kubectl delete tfjob tensorflow-training
+```
+
+9. Get a shell to the container 
+```
+kubectl exec --stdin --tty tensorflow-training-worker-0 -- /bin/bash
 ```
 
 # Hyperparameter tuning
