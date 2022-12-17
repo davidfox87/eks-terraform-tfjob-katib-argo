@@ -58,7 +58,6 @@ kubectl delete tfjob tensorflow-training
 kubectl exec --stdin --tty tensorflow-training-worker-0 -- /bin/bash
 ```
 
-10. scp -i $(minikube ssh-key) . docker@$(minikube ip):/tmp/hostpath-provisioner/default/pvc-mnist/mnist 
 # Hyperparameter tuning
 
 7. Deploy Katib components.

@@ -57,7 +57,7 @@ spec:
                     - --train_steps=1
                     - "--batch_size=${trialParameters.batchSize}"
                     - "--learning_rate=${trialParameters.learningRate}"
-                    image: foxy7887/mnist-model:v2
+                    image: foxy7887/mnist-model:v3
                     workingDir: /opt
                 restartPolicy: Never
 
