@@ -12,7 +12,7 @@
 docker login --username=foxy7887 -p xx!
 
 image_name=foxy7887/mnist-model
-image_tag=v13
+image_tag=v15
 full_image_name=${image_name}:${image_tag}
 
 cd "$(dirname "$0")" 

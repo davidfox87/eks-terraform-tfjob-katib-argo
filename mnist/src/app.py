@@ -107,15 +107,16 @@ def main(argv=None):
 
   model.fit(x_train, y_train, 
             batch_size=args.batch_size, 
-            epochs=args.train_steps, validation_split=0.1)
+            epochs=args.train_steps,
+            validation_data=(x_test, y_test))
 
   """
   ## Evaluate the trained model
   """
   # logging.info('saving the model to %s', args.model_folder)
   # model.save(args.model_folder)
-  acc = model.evaluate(x_test, y_test, verbose=0)
-  logging.info('metricName: accuracy, metricValue: {accuracy:.4f}}}'.format(accuracy=acc))
+  score = model.evaluate(x_test, y_test, verbose=0)
+  logging.info('metricName: accuracy, metricValue: {accuracy:.4f}'.format(accuracy=score[1]))
 
   return model
 
