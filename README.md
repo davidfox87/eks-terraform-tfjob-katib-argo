@@ -25,11 +25,32 @@ kubectl apply -k "github.com/kubeflow/training-operator/manifests/overlays/stand
 
 5. Containerize the MNIST classifier code. Build and push the docker image to ECR by running ```./build-and-push.sh``` in the the mnist folder.
 
-6. To start training, deploy the TFJob configuration file using kubectl.
+6. 
 ```
-kubectl create -f tf.yaml -n ${NAMESPACE}
+kubectl create secret docker-registry regcred \
+  --docker-server=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$(aws ecr get-login-password) \
+  --namespace=default
 ```
 
+
+6. To start training, deploy the TFJob configuration file using kubectl.
+```
+kubectl apply -f tf.yaml
+```
+
+7. watch the training process
+```
+kubectl describe tfjob tensorflow-training
+kubectl logs --follow tensorflow-training-worker-0
+kubectl logs po/tensorflow-training-worker-0
+```
+
+8. To remove the TFJob and associated pods
+```
+kubectl delete tfjob tensorflow-training
+```
 
 # Hyperparameter tuning
 

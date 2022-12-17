@@ -12,11 +12,21 @@ spec:
             sidecar.istio.io/inject: "false"
         spec:
           containers:
-            - name: tensorflow
-              command:
-              - python
-              - /opt/model.py
-              - --tf-export-dir=s3://tf-models/mnist-model
-              - --train_steps=200
-              - --batch_size=100
-              - --learning_rate=0.01
+          - name: tensorflow
+            command:
+            - python
+            - /opt/model.py
+            - --model_file=s3://tf-models/mnist-model
+            - --train_steps=100
+            - --batch_size=5
+            - --learning_rate=0.01
+            image: foxy7887/mnist-model:v1
+            workingDir: /opt
+            volumeMounts:
+            - name: vol 
+              mountPath: /tf-models
+          volumes:
+            - name: vol
+              persistentVolumeClaim:
+                claimName: pvc-mnist
+              

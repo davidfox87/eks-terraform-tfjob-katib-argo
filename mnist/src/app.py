@@ -95,9 +95,6 @@ def main(argv=None):
   ## Train the model
   """
 
-  batch_size = 128
-  epochs = 15
-
   opt = keras.optimizers.Adam(learning_rate=args.learning_rate)
   model.compile(loss="categorical_crossentropy", 
                 optimizer=opt, metrics=["accuracy"])
@@ -113,6 +110,8 @@ def main(argv=None):
   score = model.evaluate(x_test, y_test, verbose=0)
   print("Test loss:", score[0])
   print("Test accuracy:", score[1])
+
+  # model.save("path_to_my_model")
 
 if __name__ == '__main__':
   logging.basicConfig(level=logging.INFO)
