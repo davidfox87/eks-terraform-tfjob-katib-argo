@@ -9,10 +9,10 @@
 
 #!/bin/bash -e
 
-docker login --username=foxy7887 -p MGSGiw550!
+docker login --username=foxy7887 -p xxx!
 
 image_name=foxy7887/mnist-model
-image_tag=v3
+image_tag=v12
 full_image_name=${image_name}:${image_tag}
 
 cd "$(dirname "$0")" 

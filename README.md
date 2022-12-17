@@ -74,7 +74,7 @@ The Experiment runs twelve training jobs (Trials) and tunes the following hyperp
 
 After creating above example, check the Experiment status:
 ```
-$ kubectl get experiment random -n kubeflow
+$ kubectl get experiment tfjob-mnist -n kubeflow
 ```
 
 Check the Suggestion status:
@@ -86,18 +86,13 @@ Check the Trials statuses:
 ```
 $ kubectl get trial -n kubeflow
 ```
-$ kubectl get trial -n kubeflow
-```
+
 
 You can get the best hyperparameters with the following command:
 ```
-$ kubectl get experiment random -n kubeflow -o jsonpath='{range .status.currentOptimalTrial.parameterAssignments[*]}{.name}: {.value}{"\n"}{end}'
+$ kubectl get experiment tfjob-mnist -n kubeflow -o jsonpath='{range .status.currentOptimalTrial.parameterAssignments[*]}{.name}: {.value}{"\n"}{end}'
 ```
 
-# Wait until all Katib pods are running.
 ```
-kubectl wait --for=condition=ready --timeout=${TIMEOUT} -l "katib.kubeflow.org/component in (controller,db-manager,mysql,ui)" -n kubeflow pod
-
-echo -e "\nKatib has been deployed"
-kubectl get pods -n kubeflow
+kubectl logs random-example-2rmwkwx6-hkdwb -n kubeflow -c metrics-logger-and-collector
 ```

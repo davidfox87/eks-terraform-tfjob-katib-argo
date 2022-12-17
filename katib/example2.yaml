@@ -7,9 +7,7 @@ spec:
   objective:
     type: maximize
     goal: 0.99
-    objectiveMetricName: Validation-accuracy
-    additionalMetricNames:
-      - Train-accuracy
+    objectiveMetricName: accuracy
   algorithm:
     algorithmName: random
   parallelTrialCount: 3
@@ -53,11 +51,10 @@ spec:
                     command:
                     - python
                     - /opt/model.py
-                    - --model_folder=/tmp/mnist
-                    - --train_steps=1
-                    - "--batch_size=${trialParameters.batchSize}"
+                    - --train_steps=2
                     - "--learning_rate=${trialParameters.learningRate}"
-                    image: foxy7887/mnist-model:v3
+                    - "--batch_size=${trialParameters.batchSize}"
+                    image: foxy7887/mnist-model:v12
                     workingDir: /opt
                 restartPolicy: Never
 

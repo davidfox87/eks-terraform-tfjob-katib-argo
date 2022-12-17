@@ -17,20 +17,28 @@ import argparse
 import sys
 import logging
 
+
+# Use this format (%Y-%m-%dT%H:%M:%SZ) to record timestamp of the metrics
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%SZ",
+    level=logging.DEBUG)
+
+    
 def parse_arguments(argv):
 
   parser = argparse.ArgumentParser()
   parser.add_argument('--model_folder', 
                       type=str, 
-                      required=True, 
+                      default='/tmp/tf-models',
                       help='Name of the model folder.')
   parser.add_argument('--train_steps',
                       type=int,
-                      default=200,
+                      default=10,
                       help='The number of training steps to perform.')
   parser.add_argument('--batch_size',
                       type=int,
-                      default=100,
+                      default=10,
                       help='The number of batch size during training')
   parser.add_argument('--learning_rate',
                       type=float,
@@ -42,10 +50,11 @@ def parse_arguments(argv):
   return args
 
 
-
-
 def main(argv=None):
   args = parse_arguments(sys.argv if argv is None else argv)
+
+  # Load the data and split it between train and test sets
+  (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 
   """
   ## Prepare the data
@@ -54,12 +63,10 @@ def main(argv=None):
   num_classes = 10
   input_shape = (28, 28, 1)
 
-  # Load the data and split it between train and test sets
-  (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
-
   # Scale images to the [0, 1] range
   x_train = x_train.astype("float32") / 255
   x_test = x_test.astype("float32") / 255
+
   # Make sure images have shape (28, 28, 1)
   x_train = np.expand_dims(x_train, -1)
   x_test = np.expand_dims(x_test, -1)
@@ -106,16 +113,23 @@ def main(argv=None):
   """
   ## Evaluate the trained model
   """
-
-  score = model.evaluate(x_test, y_test, verbose=0)
-  print("Test loss:", score[0])
-  print("Test accuracy:", score[1])
-
   # Confirmation
   model.summary()
 
-  logging.info('saving the model to %s', args.model_folder)
-  model.save(args.model_folder)
+  # logging.info('saving the model to %s', args.model_folder)
+  # model.save(args.model_folder)
+  acc = model.evaluate(x_test, y_test, verbose=0)
+  logging.info('\n{{metricName: accuracy, metricValue: {:.4f}}}').format(acc)
+
+  return model
+
+def eval_model(model, test_X, test_y):
+  # predictions = model.predict(test_X)
+  acc = model.evaluate(test_X, test_y, verbose=0)
+  print("\nTest accuracy: %.1f%%" % (100.0 * acc))
+
+  return acc
+
 
 if __name__ == '__main__':
   logging.basicConfig(level=logging.INFO)
