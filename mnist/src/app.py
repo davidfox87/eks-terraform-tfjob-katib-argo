@@ -118,6 +118,8 @@ def main(argv=None):
 def eval_model(model, test_X, test_y):
   # evaluate the model performance
   score = model.evaluate(test_X, test_y, verbose=0)
+  # if we can use the tf.event to collect metrics then we can display the 
+  # train and validation curves for each trial
   print("accuracy={:2f}".format(score[1]))
 
 

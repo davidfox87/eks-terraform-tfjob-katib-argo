@@ -87,12 +87,23 @@ Check the Trials statuses:
 $ kubectl get trial -n kubeflow
 ```
 
+To see the logs of each trial:
+```
+kubectl logs --follow  random-example-2rmwkwx6-hkdwb -n kubeflow -c metrics-logger-and-collector
+```
 
 You can get the best hyperparameters with the following command:
 ```
 $ kubectl get experiment tfjob-mnist -n kubeflow -o jsonpath='{range .status.currentOptimalTrial.parameterAssignments[*]}{.name}: {.value}{"\n"}{end}'
-```
+
+learning_rate: 0.03786431590246644
+batch_size: 1
 
 ```
-kubectl logs --follow  random-example-2rmwkwx6-hkdwb -n kubeflow -c metrics-logger-and-collector
+Port-forward to the katib UI
 ```
+kubectl port-forward svc/katib-ui  8080:80 -n kubeflow
+xdg-open http://localhost:8080/katib
+```
+
+Look at the experiment results in the UI
