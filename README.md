@@ -8,6 +8,8 @@ Katib is a Kubernetes-native project for automated machine learning (AutoML). Ka
 
 This tutorial guides you through tuning and training a classification model on the MNIST dataset with Keras in a single node CPU instance running containerized training modules (Keras framework).
 
+This work forms the first step in building out training and inference workflows with Argo. 
+
 
 1. Create Kind cluster with Kubernetes v1.25.2
 ```
