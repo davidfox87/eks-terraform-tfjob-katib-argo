@@ -1,4 +1,4 @@
-# Tuning and Training Tensorflow/Keras Deep Learning Models using TFJob and Katib on Kubernetes clusters
+# Tuning and Training Tensorflow/Keras Deep Learning Models using Kubeflow/TFJob and Kubeflow/Katib on Kubernetes clusters
 This repo shows how to train a model on CPU instances in a Kubernetes cluster by using Kubeflow/TFJob training operator and Kubeflow/Katib and a Deep Learning Container. 
 
 TFJob is the Kubeflow implementation of Kubernetes custom resource that is used to run (distributed) TensorFlow training jobs on Kubernetes.
