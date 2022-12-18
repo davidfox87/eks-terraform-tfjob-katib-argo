@@ -106,4 +106,11 @@ kubectl port-forward svc/katib-ui  8080:80 -n kubeflow
 xdg-open http://localhost:8080/katib
 ```
 
-Look at the experiment results in the UI
+## View the active experiments in the UI
+![plot](images/main-dashboard.png)
+
+## View the hyperparameter tuning experiment results
+![plot](images/exp-results.png)
+
+## View the hyperparameter tuning experiment details
+![plot](images/exp-details.png)
