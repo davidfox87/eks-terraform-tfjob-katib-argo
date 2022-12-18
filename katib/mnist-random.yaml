@@ -10,12 +10,9 @@ spec:
     objectiveMetricName: accuracy
   algorithm:
     algorithmName: random
-  metricsCollectorSpec:
-    collector:
-      kind: StdOut
-  parallelTrialCount: 3
-  maxTrialCount: 12
-  maxFailedTrialCount: 3
+  parallelTrialCount: 2
+  maxTrialCount: 4
+  maxFailedTrialCount: 2
   parameters:
     - name: learning_rate
       parameterType: double
@@ -29,9 +26,6 @@ spec:
         max: "3"
   trialTemplate:
     primaryContainerName: tensorflow
-    # In this example we can collect metrics only from the Worker pods.
-    primaryPodLabels:
-      training.kubeflow.org/replica-type: worker
     trialParameters:
       - name: learningRate
         description: Learning rate for the training model
@@ -46,7 +40,6 @@ spec:
         tfReplicaSpecs:
           Worker:
             replicas: 1
-            restartPolicy: OnFailure
             template:
               spec:
                 containers:
@@ -57,7 +50,7 @@ spec:
                     - --train_steps=2
                     - "--learning_rate=${trialParameters.learningRate}"
                     - "--batch_size=${trialParameters.batchSize}"
-                    image: foxy7887/mnist-model:v15
+                    image: foxy7887/mnist-model:v18
                     workingDir: /opt
                 restartPolicy: Never
 

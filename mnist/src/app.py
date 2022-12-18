@@ -16,7 +16,7 @@ from tensorflow.keras import layers
 import argparse
 import sys
 import logging
-
+import json
 
 # Use this format (%Y-%m-%dT%H:%M:%SZ) to record timestamp of the metrics
 logging.basicConfig(
@@ -113,20 +113,12 @@ def main(argv=None):
   """
   ## Evaluate the trained model
   """
-  # logging.info('saving the model to %s', args.model_folder)
-  # model.save(args.model_folder)
-  score = model.evaluate(x_test, y_test, verbose=0)
-  logging.info('metricName: accuracy, metricValue: {accuracy:.4f}'.format(accuracy=score[1]))
-
-  return model
+  eval_model(model=model, test_X=x_test, test_y=y_test)
 
 def eval_model(model, test_X, test_y):
-  # predictions = model.predict(test_X)
-  acc = model.evaluate(test_X, test_y, verbose=0)
-  logging.info('\n{{metricName: accuracy, metricValue: {:.4f}}}').format(acc)
-
-
-  return acc
+  # evaluate the model performance
+  score = model.evaluate(test_X, test_y, verbose=0)
+  print("accuracy={:2f}".format(score[1]))
 
 
 if __name__ == '__main__':
