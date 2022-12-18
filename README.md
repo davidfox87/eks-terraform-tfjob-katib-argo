@@ -42,6 +42,7 @@ kubectl apply -k "github.com/kubeflow/katib.git/manifests/v1beta1/installs/katib
 
 6. To start training, deploy the TFJob configuration file using kubectl.
 ```
+kubectl apply -f pv.yaml
 kubectl apply -f pvc.yaml
 kubectl apply -f tf-job.yaml
 ```
