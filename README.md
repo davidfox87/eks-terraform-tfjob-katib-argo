@@ -117,3 +117,12 @@ xdg-open http://localhost:8080/katib
 
 ## View the hyperparameter tuning experiment details
 ![plot](images/exp-details.png)
+
+
+
+# Using Argo workflows with Katib
+1. Install Argo workflows
+```
+kubectl create namespace argo
+kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/download/v3.1.3/install.yaml
+```

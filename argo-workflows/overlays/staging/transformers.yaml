@@ -1,0 +1,12 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: my-argo-patch
+labels:
+  katib.kubeflow.org/metrics-collector-injection: enabled
+fieldSpecs:
+- kind: Namespace
+  metadata: 
+    name: argo
+  path: metadata/labels
+  create: true

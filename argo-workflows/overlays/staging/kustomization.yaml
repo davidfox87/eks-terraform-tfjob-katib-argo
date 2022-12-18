@@ -1,29 +1,31 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# commonLabels:
+#   katib.kubeflow.org/metrics-collector-injection: enabled
+
+transformers:
+- transformers.yaml
+
+configMapGenerator:
+  - name: workflow-controller-configmap
+    behavior: merge
+    literals:
+    - containerRuntimeExecutor=emissary
+
 resources:
 - ../../base
 - ../workflows
 
-
 patchesStrategicMerge:
-  - |
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: workflow-controller-configmap
-    data:
-      artifactRepository: |    
-        archiveLogs: true
-        s3:
-          endpoint: minio.default:9000
-          bucket: my-bucket
-          insecure: true
-          accessKeySecret:
-            name: argo-artifacts
-            key: accesskey
-          secretKeySecret:
-            name: argo-artifacts
-            key: secretkey
+- patches/artifact-repo.yaml
+  
+# patchesJson6902:
+#   - target:
+#       version: v1
+#       kind: Namespace
+#       name: argo
+#     path: patches/katib-patch.yaml
+
 
 
