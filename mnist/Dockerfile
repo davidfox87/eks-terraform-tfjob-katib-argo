@@ -1,5 +1,9 @@
 #This container contains your model and any helper scripts specific to your model.
-FROM tensorflow/tensorflow:1.15.2-py3
+FROM tensorflow/tensorflow:latest
+
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
 
 ADD src/app.py /opt/model.py
 RUN chmod +x /opt/model.py

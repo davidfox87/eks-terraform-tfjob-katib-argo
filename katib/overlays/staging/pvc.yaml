@@ -1,7 +1,8 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-mnist
+  name: pvc-tensorboard
+  namespace: kubeflow
 spec:
   accessModes:
     - ReadWriteOnce

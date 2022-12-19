@@ -3,6 +3,11 @@ kind: Kustomization
 
 resources:
 - ../../base
+- pvc.yaml
+- pv.yaml
+
+transformers:
+- transformers.yaml
 
 patchesJson6902:
 - target:

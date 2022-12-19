@@ -53,6 +53,12 @@ rules:
   resources:
     - '*'
 - apiGroups:
+    - kubeflow.org
+  verbs:
+    - '*'
+  resources:
+    - '*'
+- apiGroups:
     - argoproj.io
   resources:
     - workflowtaskresults

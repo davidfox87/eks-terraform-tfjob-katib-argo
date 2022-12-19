@@ -77,3 +77,11 @@ kubectl -n workflows describe sdep mysdep
 curl  -X POST http://localhost:9998/api/v1.0/predictions \
 -H 'Content-Type: application/json' \
 -d  '{ "data": { "ndarray": [[2,1,2,3,4]] } }' | json_pp
+
+
+
+
+
+kubectl create secret generic argo-artifacts -n workflows \
+                --from-literal=accesskey=minio \
+                --from-literal=secretkey=minio123 -o yaml

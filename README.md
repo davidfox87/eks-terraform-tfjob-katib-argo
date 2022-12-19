@@ -22,6 +22,12 @@ echo -e "\nKind cluster has been created\n"
 kubectl config use-context kind-kind
 ```
 
+3. set up minio and create bucket for argo workflows
+```
+kustomize build | kubectl apply -f -
+kubectl port-forward svc/minio 9999:9001
+http://localhost:9999
+```
 
 3. Training Operators
 Deploy TFJob operator standalone 

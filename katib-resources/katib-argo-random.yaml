@@ -8,7 +8,7 @@
 apiVersion: kubeflow.org/v1beta1
 kind: Experiment
 metadata:
-  namespace: argo
+  namespace: workflows
   name: katib-argo-workflow
 spec:
   objective:
@@ -19,8 +19,8 @@ spec:
       - Train-accuracy
   algorithm:
     algorithmName: random
-  parallelTrialCount: 2
-  maxTrialCount: 5
+  parallelTrialCount: 3
+  maxTrialCount: 10
   maxFailedTrialCount: 1
   parameters:
     - name: lr
@@ -43,7 +43,7 @@ spec:
       apiVersion: argoproj.io/v1alpha1
       kind: Workflow
       spec:
-        serviceAccountName: argo
+        serviceAccountName: workflow
         entrypoint: hp-workflow
         templates:
           - name: hp-workflow

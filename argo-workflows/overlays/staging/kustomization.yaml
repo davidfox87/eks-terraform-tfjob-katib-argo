@@ -7,11 +7,11 @@ kind: Kustomization
 transformers:
 - transformers.yaml
 
-configMapGenerator:
-  - name: workflow-controller-configmap
-    behavior: merge
-    literals:
-    - containerRuntimeExecutor=emissary
+# configMapGenerator:
+#   - name: workflow-controller-configmap
+#     behavior: merge
+#     literals:
+#     - containerRuntimeExecutor=emissary
 
 resources:
 - ../../base
