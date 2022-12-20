@@ -19,8 +19,8 @@ spec:
       - Train-accuracy
   algorithm:
     algorithmName: random
-  parallelTrialCount: 3
-  maxTrialCount: 10
+  parallelTrialCount: 10
+  maxTrialCount: 100
   maxFailedTrialCount: 1
   parameters:
     - name: lr
