@@ -1,11 +1,5 @@
 
 
-resource "aws_iam_policy" "AWSLoadBalancerControllerIAMPolicy" {
-  name        = "AWSLoadBalancerControllerIAMPolicy"
-  description = "Worker policy for the ALB Ingress"
-
-  policy = file("${path.module}/aws-alb-controller-iam_policy.json")
-}
 module "iam_assumable_role_admin" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "~> v2.6.0"
@@ -16,12 +10,12 @@ module "iam_assumable_role_admin" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:kubeflow:${local.k8s_service_account_name}"]
 
   tags = {
-    Role = "role-with-oidc for IAM profile controller"
+    Role = "role-with-oidc for kubeflow katib"
   }
 }
 
 resource "aws_iam_policy" "iam_profile_controller_policy" {
-  name_prefix = "s3_access"
+  name_prefix = "kubeflow-"
   description = "iam profile controller policy for kubeflow"
   policy      = data.aws_iam_policy_document.iam_profile_controller_policy_document.json
 }
