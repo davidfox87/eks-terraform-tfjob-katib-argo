@@ -51,7 +51,7 @@ spec:
                     - --log_dir=/logs
                     - "--learning_rate=${trialParameters.learningRate}"
                     - "--batch_size=${trialParameters.batchSize}"
-                    image: foxy7887/mnist-model:v28
+                    image: foxy7887/mnist-model:v30
                     workingDir: /opt
                     volumeMounts:
                     - mountPath: /logs
