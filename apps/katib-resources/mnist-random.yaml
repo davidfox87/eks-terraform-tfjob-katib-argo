@@ -10,13 +10,6 @@ spec:
     objectiveMetricName: accuracy
   algorithm:
     algorithmName: random
-  metricsCollectorSpec:
-    source:
-      fileSystemPath:
-        path: /tensorboard
-        kind: Directory
-    collector:
-      kind: TensorFlowEvent
   parallelTrialCount: 2
   maxTrialCount: 4
   maxFailedTrialCount: 2
@@ -52,17 +45,16 @@ spec:
                 containers:
                   - name: tensorflow
                     command:
-                    - python
+                    - python3
                     - /opt/model.py
                     - --train_steps=2
-                    - --log_dir=/tensorflow/tensorboard
+                    - --log_dir=/logs
                     - "--learning_rate=${trialParameters.learningRate}"
                     - "--batch_size=${trialParameters.batchSize}"
-                    - --export_folder=/tensorflow
-                    image: foxy7887/mnist-model:v27
+                    image: foxy7887/mnist-model:v28
                     workingDir: /opt
                     volumeMounts:
-                    - mountPath: /tensorflow
+                    - mountPath: /logs
                       name: data-volume
                 volumes:
                   - name: data-volume

@@ -3,6 +3,7 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 from tensorflow import keras
 from tensorflow.keras import layers
+from datetime import datetime
 
 tfds.disable_progress_bar()
 
@@ -12,10 +13,10 @@ import sys
 
 
 # Use this format (%Y-%m-%dT%H:%M:%SZ) to record timestamp of the metrics
-logging.basicConfig(
-    format="%(asctime)s %(levelname)-8s %(message)s",
-    datefmt="%Y-%m-%dT%H:%M:%SZ",
-    level=logging.DEBUG)
+# logging.basicConfig(
+#     format="%(asctime)s %(levelname)-8s %(message)s",
+#     datefmt="%Y-%m-%dT%H:%M:%SZ",
+#     level=logging.DEBUG)
 
 
 def parse_arguments(argv):
@@ -23,11 +24,11 @@ def parse_arguments(argv):
   parser = argparse.ArgumentParser()
   parser.add_argument('--log_dir', 
                       type=str, 
-                      default='/tensorboard',
+                      default='/logs',
                       help='Name of the model folder.')
   parser.add_argument('--train_steps',
                       type=int,
-                      default=10,
+                      default=2,
                       help='The number of training steps to perform.')
   parser.add_argument('--batch_size',
                       type=int,
@@ -82,51 +83,45 @@ def build_and_compile_cnn_model(dropout, lr):
   return model
 
 
-def make_datasets_unbatched(dataset_name):
+
+def make_dataset():
+  num_classes = 10
   # Scaling MNIST data from (0, 255] to (0., 1.]
-  def scale(image, label):
-    image = tf.cast(image, tf.float32)
-    image /= 255
-    return image, label
 
-  (ds_train, ds_test), ds_info = tfds.load(dataset_name,
-                                        split=['train', 'test'],
-                                        shuffle_files=True,
-                                        as_supervised=True,
-                                        with_info=True,
-                                      )
-  ds_train = ds_train.map(
-    scale, num_parallel_calls=tf.data.AUTOTUNE)
-  ds_train = ds_train.cache()
-  ds_train = ds_train.shuffle(ds_info.splits['train'].num_examples)
-  ds_train = ds_train.batch(128)
-  ds_train = ds_train.prefetch(tf.data.AUTOTUNE)
 
-  ds_test = ds_test.map(
-    scale, num_parallel_calls=tf.data.AUTOTUNE)
-  ds_test = ds_test.batch(128)
-  ds_test = ds_test.cache()
-  ds_test = ds_test.prefetch(tf.data.AUTOTUNE)
+  input_shape = (28, 28, 1)
 
-  return ds_train, ds_test
+  # Load the data and split it between train and test sets
+  (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+  # Scale images to the [0, 1] range
+  x_train = x_train.astype("float32") / 255
+  x_test = x_test.astype("float32") / 255
+  # Make sure images have shape (28, 28, 1)
+  x_train = np.expand_dims(x_train, -1)
+  x_test = np.expand_dims(x_test, -1)
+
+  return x_train, y_train, x_test, y_test
+
 
 def main(argv=None):
   args = parse_arguments(sys.argv if argv is None else argv)
 
-  ds_train, ds_test = make_datasets_unbatched('mnist')
+  x_train, y_train, x_test, y_test = make_dataset()
 
   model = build_and_compile_cnn_model(dropout=0.5, lr=args.learning_rate)
 
-  tensorboard = tf.keras.callbacks.TensorBoard(log_dir=args.log_dir, 
-                                               update_freq="batch")      
+  logdir = "/logs" + datetime.now().strftime("%Y%m%d-%H%M%S")
+  tensorboard_callback= tf.keras.callbacks.TensorBoard(log_dir=logdir)
+    
   std_out = StdOutCallback()
+  model.fit(x=x_train, 
+          y=y_train, 
+          epochs=2,
+          batch_size=128, 
+          validation_data=(x_test, y_test), 
+          callbacks=[tensorboard_callback, std_out])
 
-  model.fit(
-    ds_train,
-    epochs=args.train_steps,
-    validation_data=ds_test,
-    callbacks=[tensorboard, std_out]
-  )
 
   if args.export_folder:
     model.save(args.export_folder)

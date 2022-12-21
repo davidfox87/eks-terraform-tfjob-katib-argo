@@ -7,10 +7,10 @@
 # [ $? -eq 0 ] && docker push 880572800141.dkr.ecr.us-west-1.amazonaws.com/mnist-model:latest
 
 
-docker login --username=foxy7887 -p MGSGiw550!
+docker login --username=foxy7887 -p xxxx!
 
 image_name=foxy7887/mnist-model
-image_tag=v27
+image_tag=v28
 full_image_name=${image_name}:${image_tag}
 
 cd "$(dirname "$0")" 
