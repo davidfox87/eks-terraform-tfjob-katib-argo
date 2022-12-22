@@ -23,33 +23,3 @@ resource "aws_efs_mount_target" "efs-mt" {
 
 
 
-
-resource "kubernetes_persistent_volume" "efs_data" {
-  metadata {
-    name = "pv-efsdata"
-
-    labels = {
-        app = "example"
-    }
-  }
-
-  spec {
-    access_modes = ["ReadOnlyMany"]
-
-    capacity = {
-      storage = "25Gi"
-    }
-
-    volume_mode                      = "Filesystem"
-    persistent_volume_reclaim_policy = "Retain"
-    storage_class_name               = "efs-sc"
-
-    persistent_volume_source {
-      csi {
-        driver        = data.terraform_remote_state.csi.outputs.csi_name
-        volume_handle = aws_efs_file_system.efs_data.id
-        read_only    = true
-      }
-    }
-  }
-}
