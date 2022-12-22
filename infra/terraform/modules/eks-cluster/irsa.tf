@@ -147,6 +147,9 @@ resource "kubernetes_service_account" "efs-csi-driver-service-account" {
                                                   # it means that the pod can assume the IAM role with the S3 policy attached
     namespace = local.k8s_service_account_namespace_efs-csi-driver
 
+    labels = { 
+      "app.kubernetes.io/name": "aws-efs-csi-driver"
+    }
     annotations = {
       "eks.amazonaws.com/role-arn" = module.iam_assumable_role_efs_access.iam_role_arn
     }

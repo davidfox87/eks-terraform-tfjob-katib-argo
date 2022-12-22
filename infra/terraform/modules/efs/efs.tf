@@ -11,7 +11,7 @@ resource "aws_efs_file_system" "efs_data" {
 # Mount to the subnets that will be using this efs volume
 # Also attach sg's to restrict access to this volume
 resource "aws_efs_mount_target" "efs-mt" {
-    count = length(var.user_names)
+    count = length(var.subnet_ids)
     file_system_id  = aws_efs_file_system.efs_data.id
     subnet_id  = var.subnet_ids[count.index]
     security_groups = [
