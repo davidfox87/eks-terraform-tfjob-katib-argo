@@ -63,16 +63,3 @@ resource "aws_iam_role" "workernodes" {
  }
 
 
-
-resource "aws_iam_policy" "s3-access" {
-  name        = "S3AccessWorkerNode"
-  description = "s3 access for workers"
-
-  policy = file("${path.module}/s3-access-worker.json.json")
-}
-
- resource "aws_iam_role_policy_attachment" "AmazonS3AccessWorkerNode" {
-  policy_arn = aws_iam_policy.s3-access.arn
-  role    = aws_iam_role.workernodes.name
- }
-

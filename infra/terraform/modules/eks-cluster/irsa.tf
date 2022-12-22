@@ -7,7 +7,7 @@ resource "aws_iam_policy" "AWSLoadBalancerControllerIAMPolicy" {
   name        = "AWSLoadBalancerControllerIAMPolicy"
   description = "Worker policy for the ALB Ingress"
 
-  policy = file("${path.module}/aws-alb-controller-iam_policy.json")
+  policy = file("${path.module}/iam-policies/aws-alb-controller-iam_policy.json")
 }
 module "iam_assumable_role_admin" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
@@ -88,7 +88,7 @@ resource "aws_iam_policy" "s3-access" {
   name        = "s3-access-artifact-repo"
   description = "s3 access for argo workflows"
 
-  policy = file("${path.module}/s3-access-worker.json.json")
+  policy = file("${path.module}/iam-policies/s3-access-worker.json.json")
 }
 
 resource "kubernetes_namespace" "example" {
@@ -133,7 +133,7 @@ resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
   name        = "AmazonEKS_EFS_CSI_Driver_Policy"
   description = "Worker policy for access to EFS"
 
-  policy = file("${path.module}/efs-access-iam_policy.json")
+  policy = file("${path.module}/policies/efs-access-iam_policy.json")
 }
 
 resource "kubernetes_namespace" "kubernetes_efs_csi_driver" {
