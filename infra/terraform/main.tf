@@ -22,7 +22,7 @@ module "my-efs" {
   security_groups     = module.my-eks.efs-sg-rule-id
 
   depends_on = [
-    module.my-eks
+    module.my-eks # depends on Amazon EFS CSI driver install using Helm
   ]
 }
 
