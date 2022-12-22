@@ -84,24 +84,11 @@ module "iam_assumable_role_s3_access" {
   role_policy_arns              = [aws_iam_policy.s3_access.arn]
   oidc_fully_qualified_subjects = ["${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
 }
-data "aws_iam_policy_document" "s3-access" {
-  version = "2012-10-17"
-  statement {
-    sid = "Fetch"
-    effect = "Allow"
-    actions = [ "s3:GetObject",
-                "s3:PutObject",
-                "s3:ListBucket",
-                "s3:GetBucketLocation"
-    ]
-    resources = [ "arn:aws:s3:::artifact-repository" ]
-  }
-}
+resource "aws_iam_policy" "s3-access" {
+  name        = "s3-access-artifact-repo"
+  description = "s3 access for argo workflows"
 
-resource "aws_iam_policy" "s3_access" {
-  name_prefix = "s3_access"
-  description = "s3 access for pods run by argo workflows in ${var.cluster-name}"
-  policy      = data.aws_iam_policy_document.s3-access.json
+  policy = file("${path.module}/s3-access-worker.json.json")
 }
 
 resource "kubernetes_namespace" "example" {
@@ -117,7 +104,7 @@ resource "kubernetes_service_account" "s3-access-service-account" {
   metadata {
     name = local.k8s_service_account_name_s3access # This is used as the serviceAccountName in the spec section of the k8 pod manifest
                                                   # it means that the pod can assume the IAM role with the S3 policy attached
-    namespace = local.k8s_service_account_namespace_mlflow
+    namespace = local.k8s_service_account_namespace_workflows
 
     annotations = {
       "eks.amazonaws.com/role-arn" = module.iam_assumable_role_s3_access.iam_role_arn

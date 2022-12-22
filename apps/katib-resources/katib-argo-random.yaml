@@ -43,7 +43,7 @@ spec:
       apiVersion: argoproj.io/v1alpha1
       kind: Workflow
       spec:
-        serviceAccountName: workflow
+        serviceAccountName: workflow-sa
         entrypoint: hp-workflow
         templates:
           - name: hp-workflow
