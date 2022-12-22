@@ -15,4 +15,10 @@ module "my-eks" {
 
 }
 
+module "my-efs" {
+  source = "./modules/efs"
+
+  subnets             = concat(module.network.vpc_private_subnets)
+  security_groups     = module.my-eks.efs-sg-rule-id
+}
 

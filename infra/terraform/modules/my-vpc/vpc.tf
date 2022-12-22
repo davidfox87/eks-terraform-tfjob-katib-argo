@@ -97,3 +97,5 @@ resource "aws_route_table_association" "rta_subnet_private" {
   subnet_id      = "${aws_subnet.private.*.id[count.index]}"
   route_table_id = aws_route_table.my_nat_table.id
 }
+
+

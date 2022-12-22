@@ -52,7 +52,7 @@ class StdOutCallback(tf.keras.callbacks.ProgbarLogger):
         logs = logs or {}
         for k in self.params['metrics']:
             if k in logs:
-                print("{}={}".format(k,logs[k]))
+                print("{}={}\n".format(k,logs[k]))
 
 def build_and_compile_cnn_model(dropout, lr):
   # Model / data parameters
@@ -85,8 +85,6 @@ def build_and_compile_cnn_model(dropout, lr):
 
 
 def make_dataset():
-  num_classes = 10
-
   # Load the data and split it between train and test sets
   (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 

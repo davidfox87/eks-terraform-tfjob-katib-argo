@@ -56,3 +56,7 @@ output "cluster_oidc_issuer" {
 output "kubeconfig-certificate-authority-data" {
   value = aws_eks_cluster.demo.certificate_authority[0].data
 }
+
+output "efs-sg-rule-id" {
+  value = aws_security_group.allow_eks_cluster.id
+}

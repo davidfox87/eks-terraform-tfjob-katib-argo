@@ -124,3 +124,44 @@ resource "kubernetes_service_account" "s3-access-service-account" {
     }
   }
 }
+
+
+
+
+
+
+
+module "iam_assumable_role_efs_access" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version = "~> 4.0"
+
+  create_role                   = true
+  role_name                     = "efs-access"
+  provider_url                  = replace(aws_iam_openid_connect_provider.eks-cluster.url, "https://", "")
+  role_policy_arns              = [aws_iam_policy.AmazonEKS_EFS_CSI_Driver_Policy.arn]
+  oidc_fully_qualified_subjects = ["${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
+}
+
+resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
+  name        = "AmazonEKS_EFS_CSI_Driver_Policy"
+  description = "Worker policy for access to EFS"
+
+  policy = file("${path.module}/efs-access-iam_policy.json")
+}
+
+resource "kubernetes_namespace" "kubernetes_efs_csi_driver" {
+  metadata {
+    name = "kube-system"
+  }
+}
+resource "kubernetes_service_account" "efs-csi-driver-service-account" {
+  metadata {
+    name = local.k8s_service_account_name_efs-csi-driver # This is used as the serviceAccountName in the spec section of the k8 pod manifest
+                                                  # it means that the pod can assume the IAM role with the S3 policy attached
+    namespace = local.k8s_service_account_namespace_efs-csi-driver
+
+    annotations = {
+      "eks.amazonaws.com/role-arn" = module.iam_assumable_role_efs_access.iam_role_arn
+    }
+  }
+}
