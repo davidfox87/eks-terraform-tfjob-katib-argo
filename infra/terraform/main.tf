@@ -20,5 +20,9 @@ module "my-efs" {
 
   subnets             = concat(module.network.vpc_private_subnets)
   security_groups     = module.my-eks.efs-sg-rule-id
+
+  depends_on = [
+    module.my-eks
+  ]
 }
 

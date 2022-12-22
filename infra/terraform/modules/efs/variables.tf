@@ -11,4 +11,5 @@ variable "aws_security_group_efs_id" {
 variable "storage_class_name" {
     description = "name of storage class"
     type        = string
+    default     = "efs-sc"
 }
