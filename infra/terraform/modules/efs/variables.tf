@@ -18,3 +18,9 @@ variable "cluster-name" {
     description = "name of the EKS cluster"
     type        = string
 }
+
+
+variable "cluster-id" {
+    description = "id of the EKS cluster"
+    type        = string
+}
