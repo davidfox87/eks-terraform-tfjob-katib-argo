@@ -20,11 +20,7 @@ module "my-efs" {
 
   subnet_ids           = concat(module.network.vpc_private_subnets)
   aws_security_group_efs_id     = module.my-eks.efs-sg-rule-id
-  cluster-name        = var.cluster-name
-  cluster-id          = module.my-eks.cluster_id
-  depends_on = [
-    module.my-eks # depends on Amazon EFS CSI driver install using Helm
-  ]
+
 }
 
 

@@ -51,15 +51,6 @@ module "iam_assumable_role_admin" {
 
 # create a k8s service account that has the IRSA attached
 
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.example.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.example.certificate_authority[0].data)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", var.cluster-name]
-    command     = "aws"
-  }
-}
 resource "kubernetes_service_account" "eks-service-account" {
   metadata {
     name = local.k8s_service_account_name # This is used as the serviceAccountName in the spec section of the k8 pod manifest

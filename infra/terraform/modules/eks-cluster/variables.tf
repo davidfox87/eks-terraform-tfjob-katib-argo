@@ -77,3 +77,9 @@ variable "addons" {
     }
   ]
 }
+
+variable "storage_class_name" {
+    description = "name of storage class"
+    type        = string
+    default     = "efs-sc"
+}

@@ -14,13 +14,5 @@ variable "storage_class_name" {
     default     = "efs-sc"
 }
 
-variable "cluster-name" {
-    description = "name of the EKS cluster"
-    type        = string
-}
 
 
-variable "cluster-id" {
-    description = "id of the EKS cluster"
-    type        = string
-}
