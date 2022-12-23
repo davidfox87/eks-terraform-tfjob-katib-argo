@@ -3,15 +3,22 @@ data "tls_certificate" "cluster_oidc_issuer_url" {
   url = aws_eks_cluster.demo.identity[0].oidc[0].issuer
 }
 
+resource "aws_iam_openid_connect_provider" "eks-cluster" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.demo.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.demo.identity[0].oidc[0].issuer
+}
+
+
 resource "aws_iam_policy" "AWSLoadBalancerControllerIAMPolicy" {
   name        = "AWSLoadBalancerControllerIAMPolicy"
   description = "Worker policy for the ALB Ingress"
 
-  policy = file("${path.module}/iam-policies/aws-alb-controller-iam_policy.json")
+  policy = file("${path.module}/aws-alb-controller-iam_policy.json")
 }
 module "iam_assumable_role_admin" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> v2.6.0"
+  version                       = "~> 4.0"
   create_role                   = true
   role_name                     = "aws-alb-controller"
   role_description              = <<EOF
@@ -19,7 +26,7 @@ module "iam_assumable_role_admin" {
                                   An AWS Application Load Balancer (ALB) when you create a Kubernetes Ingress.
                                   An AWS Network Load Balancer (NLB) when you create a Kubernetes service of type LoadBalancer.
                                   EOF
-  provider_url                  = replace(tls_certificate.cluster_oidc_issuer_url, "https://", "")
+  provider_url                  = replace(aws_iam_openid_connect_provider.eks-cluster.url, "https://", "")
   role_policy_arns              = [aws_iam_policy.AWSLoadBalancerControllerIAMPolicy.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
 
@@ -81,14 +88,14 @@ module "iam_assumable_role_s3_access" {
   create_role                   = true
   role_name                     = "s3-access"
   provider_url                  = replace(aws_iam_openid_connect_provider.eks-cluster.url, "https://", "")
-  role_policy_arns              = [aws_iam_policy.s3_access.arn]
+  role_policy_arns              = [aws_iam_policy.s3-access.arn]
   oidc_fully_qualified_subjects = ["${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
 }
 resource "aws_iam_policy" "s3-access" {
   name        = "s3-access-artifact-repo"
   description = "s3 access for argo workflows"
 
-  policy = file("${path.module}/iam-policies/s3-access-worker.json.json")
+  policy = file("${path.module}/s3-access-worker.json")
 }
 
 resource "kubernetes_namespace" "example" {
@@ -102,7 +109,7 @@ resource "kubernetes_namespace" "example" {
 }
 resource "kubernetes_service_account" "s3-access-service-account" {
   metadata {
-    name = local.k8s_service_account_name_s3access # This is used as the serviceAccountName in the spec section of the k8 pod manifest
+    name = local.k8s_service_account_name_workflow # This is used as the serviceAccountName in the spec section of the k8 pod manifest
                                                   # it means that the pod can assume the IAM role with the S3 policy attached
     namespace = local.k8s_service_account_namespace_workflows
 
@@ -133,7 +140,7 @@ resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
   name        = "AmazonEKS_EFS_CSI_Driver_Policy"
   description = "Worker policy for access to EFS"
 
-  policy = file("${path.module}/policies/efs-access-iam_policy.json")
+  policy = file("${path.module}/efs-access-iam-policy.json")
 }
 
 resource "kubernetes_namespace" "kubernetes_efs_csi_driver" {

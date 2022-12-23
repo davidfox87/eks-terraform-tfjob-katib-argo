@@ -1,5 +1,3 @@
-
-
 provider "helm" {
     kubernetes {
     host                   = data.aws_eks_cluster.example.endpoint

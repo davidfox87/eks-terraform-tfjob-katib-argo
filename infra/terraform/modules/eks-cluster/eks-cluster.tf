@@ -75,3 +75,21 @@ resource "null_resource" "kubeconfig" {
     aws_eks_cluster.demo,
   ]
 }
+
+
+
+data "aws_eks_cluster" "example" {
+  name = aws_eks_cluster.demo.id
+}
+data "aws_eks_cluster_auth" "example" {
+  name = aws_eks_cluster.demo.id
+}
+# Get information about the TLS certificates securing a host.
+
+# Get information about the TLS certificates securing a host.
+data "tls_certificate" "demo" {
+  url = aws_eks_cluster.demo.identity[0].oidc[0].issuer
+}
+
+
+# https://github.com/kube-hetzner/terraform-hcloud-kube-hetzner/blob/master/kubeconfig.tf

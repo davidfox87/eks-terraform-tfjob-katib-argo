@@ -1,5 +1,6 @@
 #This container contains your model and any helper scripts specific to your model.
 FROM tensorflow/tensorflow:latest-py3
+LABEL maintainer="david.fox@dish.com"
 
 COPY requirements.txt requirements.txt
 
