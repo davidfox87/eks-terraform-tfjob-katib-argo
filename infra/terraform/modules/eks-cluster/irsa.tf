@@ -1,3 +1,17 @@
+
+data "aws_eks_cluster" "example" {
+  name = aws_eks_cluster.demo.id
+}
+data "aws_eks_cluster_auth" "example" {
+  name = aws_eks_cluster.demo.id
+}
+# Get information about the TLS certificates securing a host.
+
+# Get information about the TLS certificates securing a host.
+data "tls_certificate" "demo" {
+  url = aws_eks_cluster.demo.identity[0].oidc[0].issuer
+}
+
 # Get information about the TLS certificates securing a host.
 data "tls_certificate" "cluster_oidc_issuer_url" {
   url = aws_eks_cluster.demo.identity[0].oidc[0].issuer
