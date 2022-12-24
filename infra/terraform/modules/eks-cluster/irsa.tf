@@ -5,12 +5,6 @@ data "aws_eks_cluster" "example" {
 data "aws_eks_cluster_auth" "example" {
   name = aws_eks_cluster.demo.id
 }
-# Get information about the TLS certificates securing a host.
-
-# Get information about the TLS certificates securing a host.
-data "tls_certificate" "demo" {
-  url = aws_eks_cluster.demo.identity[0].oidc[0].issuer
-}
 
 # Get information about the TLS certificates securing a host.
 data "tls_certificate" "cluster_oidc_issuer_url" {
@@ -19,10 +13,9 @@ data "tls_certificate" "cluster_oidc_issuer_url" {
 
 resource "aws_iam_openid_connect_provider" "eks-cluster" {
   client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.demo.certificates[0].sha1_fingerprint]
-  url             = aws_eks_cluster.demo.identity[0].oidc[0].issuer
+  thumbprint_list = [data.tls_certificate.cluster_oidc_issuer_url.certificates[0].sha1_fingerprint]
+  url             = data.tls_certificate.cluster_oidc_issuer_url.url
 }
-
 
 resource "aws_iam_policy" "AWSLoadBalancerControllerIAMPolicy" {
   name        = "AWSLoadBalancerControllerIAMPolicy"
@@ -67,25 +60,6 @@ resource "kubernetes_service_account" "eks-service-account" {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 module "iam_assumable_role_s3_access" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version = "~> 4.0"
@@ -103,7 +77,7 @@ resource "aws_iam_policy" "s3-access" {
   policy = file("${path.module}/s3-access-worker.json")
 }
 
-resource "kubernetes_namespace" "example" {
+resource "kubernetes_namespace" "workflows" {
   metadata {
     labels = {
       app = "workflows"
@@ -122,6 +96,9 @@ resource "kubernetes_service_account" "s3-access-service-account" {
       "eks.amazonaws.com/role-arn" = module.iam_assumable_role_s3_access.iam_role_arn
     }
   }
+  depends_on = [
+    kubernetes_namespace.workflows
+  ]
 }
 
 
@@ -166,4 +143,7 @@ resource "kubernetes_service_account" "efs-csi-driver-service-account" {
       "eks.amazonaws.com/role-arn" = module.iam_assumable_role_efs_access.iam_role_arn
     }
   }
+  depends_on = [
+    kubernetes_namespace.kubernetes_efs_csi_driver
+  ]
 }
