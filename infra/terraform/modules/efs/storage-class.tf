@@ -1,12 +1,12 @@
 # Resource: Kubernetes Storage Class
 resource "kubernetes_storage_class_v1" "efs_sc" {  
   metadata {
-    name = "efs-sc"
+    name = "${var.storage_class_name}"
   }
   storage_provisioner = "efs.csi.aws.com"  
   parameters = {
     provisioningMode = "efs-ap"
-    fileSystemId =  aws_efs_file_system.efs_data.id 
+    fileSystemId =  aws_efs_file_system.efs_data.id
     directoryPerms = "700"
     gidRangeStart = "1000" # optional
     gidRangeEnd = "2000" # optional
