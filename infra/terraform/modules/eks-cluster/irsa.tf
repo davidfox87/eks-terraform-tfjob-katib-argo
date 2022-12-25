@@ -77,7 +77,8 @@ module "iam_assumable_role_s3_access" {
     aws_iam_policy.s3-access.arn
   ]
   
-  oidc_fully_qualified_subjects = ["sts.amazonaws.com"]
+  #oidc_fully_qualified_subjects = ["sts.amazonaws.com"]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:${local.k8s_service_account_namespace_workflows}:${local.k8s_service_account_name_workflow}"]
 
   tags = {
     Role = "role-with-oidc"
