@@ -74,7 +74,7 @@ resource "aws_iam_policy" "s3-access" {
   name        = "s3-access-artifact-repo"
   description = "s3 access for argo workflows"
 
-  policy = file("${path.module}/s3-access-worker.json")
+  policy = file("${path.module}/s3-access-iam_policy.json")
 }
 
 resource "kubernetes_namespace" "workflows" {
