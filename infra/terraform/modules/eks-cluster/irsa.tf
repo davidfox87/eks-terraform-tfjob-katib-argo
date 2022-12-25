@@ -62,14 +62,29 @@ resource "kubernetes_service_account" "eks-service-account" {
 
 module "iam_assumable_role_s3_access" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  
   version = "~> 4.0"
 
   create_role                   = true
+  
   role_name                     = "s3-access"
   provider_url                  = replace(aws_iam_openid_connect_provider.eks-cluster.url, "https://", "")
-  role_policy_arns              = [aws_iam_policy.s3-access.arn]
-  oidc_fully_qualified_subjects = ["${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
+  provider_urls = [
+    replace(aws_iam_openid_connect_provider.eks-cluster.url, "https://", "")
+  ]
+
+  role_policy_arns              = [
+    aws_iam_policy.s3-access.arn
+  ]
+  
+  oidc_fully_qualified_subjects = ["sts.amazonaws.com"]
+
+  tags = {
+    Role = "role-with-oidc"
+  }
 }
+
+
 resource "aws_iam_policy" "s3-access" {
   name        = "s3-access-artifact-repo"
   description = "s3 access for argo workflows"
@@ -114,8 +129,10 @@ module "iam_assumable_role_efs_access" {
   create_role                   = true
   role_name                     = "efs-access"
   provider_url                  = replace(aws_iam_openid_connect_provider.eks-cluster.url, "https://", "")
-  role_policy_arns              = [aws_iam_policy.AmazonEKS_EFS_CSI_Driver_Policy.arn]
-  oidc_fully_qualified_subjects = ["${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
+  role_policy_arns              = [
+        aws_iam_policy.AmazonEKS_EFS_CSI_Driver_Policy.arn
+  ]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:${local.k8s_service_account_namespace_efs-csi-driver}:${local.k8s_service_account_name_efs-csi-driver}"]
 }
 
 resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
@@ -125,11 +142,7 @@ resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
   policy = file("${path.module}/efs-access-iam-policy.json")
 }
 
-resource "kubernetes_namespace" "kubernetes_efs_csi_driver" {
-  metadata {
-    name = "kube-system"
-  }
-}
+
 resource "kubernetes_service_account" "efs-csi-driver-service-account" {
   metadata {
     name = local.k8s_service_account_name_efs-csi-driver # This is used as the serviceAccountName in the spec section of the k8 pod manifest
@@ -143,7 +156,4 @@ resource "kubernetes_service_account" "efs-csi-driver-service-account" {
       "eks.amazonaws.com/role-arn" = module.iam_assumable_role_efs_access.iam_role_arn
     }
   }
-  depends_on = [
-    kubernetes_namespace.kubernetes_efs_csi_driver
-  ]
 }
