@@ -71,25 +71,9 @@ resource "helm_release" "kubernetes_efs_csi_driver" {
     name  = "controller.serviceAccount.name"
     value = local.k8s_service_account_name_efs-csi-driver
   }
-  depends_on = [
-    kubernetes_service_account.efs-csi-driver-service-account
-  ]
+  set {
+    name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.iam_assumable_role_efs_access.iam_role_arn
+  }
+
 }
-
-
-
-
-# Argocd install
-# resource "helm_release" "argocd" {
-#   name  = "argocd"
-
-#   repository       = "https://argoproj.github.io/argo-helm"
-#   chart            = "argo-cd"
-#   namespace        = "argocd"
-#   version          = "5.13.0"
-#   create_namespace = true
-
-#   values = [
-#     file("argocd/application.yaml")
-#   ]
-# }
