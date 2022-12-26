@@ -60,3 +60,7 @@ output "kubeconfig-certificate-authority-data" {
 output "efs-sg-rule-id" {
   value = aws_security_group.allow_eks_cluster.id
 }
+
+output "iam-oidc-provider-url" {
+  value = aws_iam_openid_connect_provider.eks-cluster.url
+}

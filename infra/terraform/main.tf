@@ -23,3 +23,10 @@ module "my-efs" {
 
 }
 
+module "kubeflow" {
+  source = "./modules/kubeflow"
+
+  iam-oidc-provider-url = module.my-eks.iam-oidc-provider-url
+
+
+}
