@@ -9,7 +9,7 @@ spec:
   project: production
   source:
     path: apps/argo-workflows/overlays/production/
-    repoURL: https://github.com/davidfox87/terraform-eks-acm-alb-istio.git
+    repoURL: https://github.com/davidfox87/mnist-tfjob-katib.git
     targetRevision: HEAD
 
   destination:
