@@ -49,7 +49,13 @@ kubectl -n workflows exec -it aws-cli -- aws sts get-caller-identity
 kubectl exec -it aws-cli -n workflows -- aws s3 ls s3://argo-artifacts-880572800141
 ```
 
-## patch the storage class
+## patch the storage class so the efs-provisioner is the default
+```
+kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+
+kubectl patch storageclass efs-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+```
 ## Clean up your workspace
 
 Delete the application in argo-cd

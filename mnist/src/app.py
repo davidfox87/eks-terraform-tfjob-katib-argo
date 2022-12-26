@@ -111,7 +111,7 @@ def main(argv=None):
   tensorboard_callback= tf.keras.callbacks.TensorBoard(log_dir=logdir,
                                                        update_freq='epoch',
                                                     )
-    
+
   std_out = StdOutCallback()
   model.fit(x=x_train, 
           y=y_train, 
