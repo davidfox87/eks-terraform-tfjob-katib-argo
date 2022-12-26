@@ -46,13 +46,15 @@ def parse_arguments(argv):
 
   return args
 
-class StdOutCallback(tf.keras.callbacks.ProgbarLogger):
-    # a simple callback that picky-backs of the progress bar callback. It prints metrics to StdOut.
-    def on_batch_end(self, batch, logs=None):
-        logs = logs or {}
-        for k in self.params['metrics']:
-            if k in logs:
-                print("{}={}\n".format(k,logs[k]))
+# Katib parses metrics in this format: <metric-name>=<metric-value>.
+class StdOutCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        logging.info(
+            "Epoch {:4d}/{}. accuracy={:.4f} - loss={:.4f}".format(
+                epoch+1, logs["accuracy"], logs["loss"]
+            )
+        )
+  
 
 def build_and_compile_cnn_model(dropout, lr):
   # Model / data parameters

@@ -43,7 +43,7 @@ resource "kubernetes_namespace" "kubeflow" {
     name = "kubeflow"
   }
 }
-resource "kubernetes_service_account" "s3-access-service-account" {
+resource "kubernetes_service_account" "kubeflow-mlops-service-account" {
   metadata {
     name = local.k8s_service_account_name_kubeflow # This is used as the serviceAccountName in the spec section of the k8 pod manifest
                                                   # it means that the pod can assume the IAM role with the S3 policy attached

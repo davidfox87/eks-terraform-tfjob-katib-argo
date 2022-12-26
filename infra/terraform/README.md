@@ -29,10 +29,27 @@ Verify the aws-load-balancer-controller is installed
 ```
 kubectl get deployment -n kube-system aws-load-balancer-controller
 ```
-## Our infrastructure in aws will look like this (substitute gRPC traffic with HTTPS traffic):
-![AWS infra](https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/images/pattern-img/abf727c1-ff8b-43a7-923f-bce825d1b459/images/281936fa-bc43-4b4e-a343-ba1eab97df38.png)
 
 
+# To test EFS
+
+```
+kubectl apply -f efs-pod.yaml
+kubectl get pvc
+kubectl get pv
+kubectl exec --stdin --tty efs-app  -- /bin/sh
+cd /data
+tail -f out
+```
+
+# To test s3 access by the workflow-sa service-account
+```
+kubectl apply -f aws-cli-pod.yaml
+kubectl -n workflows exec -it aws-cli -- aws sts get-caller-identity                
+kubectl exec -it aws-cli -n workflows -- aws s3 ls s3://argo-artifacts-880572800141
+```
+
+## patch the storage class
 ## Clean up your workspace
 
 Delete the application in argo-cd
