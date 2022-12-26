@@ -50,8 +50,10 @@ def parse_arguments(argv):
 class StdOutCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         logging.info(
-            "Epoch {:4d}: accuracy={:.4f} - loss={:.4f}".format(
-                epoch+1, logs["accuracy"], logs["loss"]
+            "Epoch {:4d}: accuracy={:.4f} - loss={:.4f} \
+                val_accuracy={:.4f} - val_loss={:.4f}".format(
+                epoch+1, logs["accuracy"], logs["loss"],
+                logs["val_accuracy"], logs["val_loss"]
             )
         )
   
@@ -110,6 +112,7 @@ def main(argv=None):
   logdir = "/logs" + datetime.now().strftime("%Y%m%d-%H%M%S")
   tensorboard_callback= tf.keras.callbacks.TensorBoard(log_dir=logdir,
                                                        update_freq='epoch',
+                                                       profile_batch=5
                                                     )
 
   std_out = StdOutCallback()
