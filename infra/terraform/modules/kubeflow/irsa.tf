@@ -32,3 +32,28 @@ module "iam_assumable_role_kubeflow_profile_controller" {
   }
 }
 
+
+
+resource "kubernetes_namespace" "kubeflow" {
+  metadata {
+    labels = {
+      app = "kubeflow"
+    }
+
+    name = "kubeflow"
+  }
+}
+resource "kubernetes_service_account" "s3-access-service-account" {
+  metadata {
+    name = local.k8s_service_account_name_kubeflow # This is used as the serviceAccountName in the spec section of the k8 pod manifest
+                                                  # it means that the pod can assume the IAM role with the S3 policy attached
+    namespace = local.k8s_service_account_namespace_kubeflow
+
+    annotations = {
+      "eks.amazonaws.com/role-arn" = module.iam_assumable_role_kubeflow_profile_controller.iam_role_arn
+    }
+  }
+  depends_on = [
+    kubernetes_namespace.kubeflow
+  ]
+}
