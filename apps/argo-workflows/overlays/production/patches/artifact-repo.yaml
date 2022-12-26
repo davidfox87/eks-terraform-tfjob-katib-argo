@@ -1,0 +1,16 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-controller-configmap
+data:
+  artifactRepository: |    
+    archiveLogs: true
+    s3:
+      bucket: argo-artifacts-880572800141
+      endpoint: s3.amazonaws.com
+      insecure: false
+      region: us-west-1
+      useSDKCreds: true
+
+      

@@ -5,12 +5,12 @@
         "Sid": "",
         "Effect": "Allow",
         "Action": [
-            "s3:GetObject",
-            "s3:PutObject",
-            "s3:ListBucket",
-            "s3:GetBucketLocation"
+            "s3:*"
           ],
-          "Resource": "arn:aws:s3:::argo-artifacts-880572800141"
+          "Resource": ["arn:aws:s3:::argo-artifacts-880572800141",
+                        "arn:aws:s3:::argo-artifacts-880572800141/*"
+          ]
+
        }
     ]
 }

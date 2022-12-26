@@ -1,0 +1,3 @@
+- op: add
+  path: /spec/template/spec/securityContext/fsGroup
+  value: 65534

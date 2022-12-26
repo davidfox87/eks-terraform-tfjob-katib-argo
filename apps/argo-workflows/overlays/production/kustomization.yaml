@@ -5,16 +5,15 @@ resources:
 - ../../base
 - ../workflows
 
-
 patchesStrategicMerge:
-  - |
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: workflow-controller-configmap
-    data:
-      config: |
-        artifactRepository:
-          s3:
-            bucket: argo-artifacts-880572800141
-            endpoint: s3.amazonaws.com
+- patches/artifact-repo.yaml
+
+patchesJson6902:
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: argo-server
+  path: patches/fsgroup-patch.yaml
+
+  
