@@ -65,15 +65,10 @@ resource "helm_release" "kubernetes_efs_csi_driver" {
   }
   set {
     name  = "controller.serviceAccount.create"
-    value = "true"
+    value = "false"
   }
   set {
     name  = "controller.serviceAccount.name"
     value = local.k8s_service_account_name_efs-csi-driver
   }
-  set {
-    name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.iam_assumable_role_efs_access.iam_role_arn
-  }
-
 }

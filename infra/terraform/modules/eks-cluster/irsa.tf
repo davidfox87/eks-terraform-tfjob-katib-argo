@@ -122,6 +122,12 @@ resource "kubernetes_service_account" "s3-access-service-account" {
 
 
 
+resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
+  name        = "AmazonEKS_EFS_CSI_Driver_Policy"
+  description = "Worker policy for access to EFS"
+
+  policy = file("${path.module}/efs-access-iam-policy.json")
+}
 
 module "iam_assumable_role_efs_access" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
@@ -136,22 +142,19 @@ module "iam_assumable_role_efs_access" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:${local.k8s_service_account_namespace_efs-csi-driver}:${local.k8s_service_account_name_efs-csi-driver}"]
 }
 
-resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
-  name        = "AmazonEKS_EFS_CSI_Driver_Policy"
-  description = "Worker policy for access to EFS"
 
-  policy = file("${path.module}/efs-access-iam-policy.json")
+resource "kubernetes_service_account" "efs-csi-driver-service-account" {
+  metadata {
+    name = local.k8s_service_account_name_efs-csi-driver # This is used as the serviceAccountName in the spec section of the k8 pod manifest
+                                                  # it means that the pod can assume the IAM role with the S3 policy attached
+    namespace = local.k8s_service_account_namespace_efs-csi-driver
+    labels = {
+      "app.kubernetes.io/managed-by" = "Helm"
+    }
+    annotations = {
+      "meta.helm.sh/release-namespace"   = "kube-system"
+      "meta.helm.sh/release-name"   = "aws-efs-csi-driver"
+      "eks.amazonaws.com/role-arn"  = module.iam_assumable_role_efs_access.iam_role_arn
+    }
+  }
 }
-
-
-# resource "kubernetes_service_account" "efs-csi-driver-service-account" {
-#   metadata {
-#     name = local.k8s_service_account_name_efs-csi-driver # This is used as the serviceAccountName in the spec section of the k8 pod manifest
-#                                                   # it means that the pod can assume the IAM role with the S3 policy attached
-#     namespace = local.k8s_service_account_namespace_efs-csi-driver
-
-#     annotations = {
-#       "eks.amazonaws.com/role-arn" = module.iam_assumable_role_efs_access.iam_role_arn
-#     }
-#   }
-# }

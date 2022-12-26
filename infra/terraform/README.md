@@ -32,6 +32,11 @@ kubectl get deployment -n kube-system aws-load-balancer-controller
 
 
 # To test EFS
+For more info on efs-csi-driver see:
+https://github.com/kubernetes-sigs/aws-efs-csi-driver
+
+for info on how to set up efs with eks:
+https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html
 
 ```
 kubectl apply -f efs-pod.yaml
