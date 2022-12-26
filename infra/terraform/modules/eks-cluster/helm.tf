@@ -65,7 +65,7 @@ resource "helm_release" "kubernetes_efs_csi_driver" {
   }
   set {
     name  = "controller.serviceAccount.create"
-    value = "false"
+    value = "true"
   }
   set {
     name  = "controller.serviceAccount.name"
