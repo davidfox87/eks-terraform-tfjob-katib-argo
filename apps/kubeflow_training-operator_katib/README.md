@@ -1,0 +1,1 @@
+This kustomize overlay installs and patches resources for the Kubeflow components: Training-operator (containing TFJob) and Katib (the hyperparameter tuning framework)

@@ -1,0 +1,9 @@
+- op: add
+  path: /rules/0
+  value:
+    apiGroups:
+      - "argoproj.io"
+    resources:
+      - workflows
+    verbs:
+      - "*"
