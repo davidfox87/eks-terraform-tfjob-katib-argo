@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: kubeflow
 
 resources:
-- github.com/kubeflow/training-operator/manifests/overlays/standalone
 - github.com/kubeflow/katib/manifests/v1beta1/installs/katib-standalone
