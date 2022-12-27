@@ -8,7 +8,7 @@ metadata:
 spec:
   project: production
   source:
-    path: apps/kubeflow_training-operator_katib/overlays/production/
+    path: apps/katib/overlays/production/
     repoURL: https://github.com/davidfox87/mnist-tfjob-katib.git
     targetRevision: HEAD
 
