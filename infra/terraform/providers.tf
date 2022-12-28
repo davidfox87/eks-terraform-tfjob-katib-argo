@@ -10,10 +10,6 @@ provider "aws" {
   }
 }
 
-# data "aws_eks_cluster_auth" "this" {
-#   name = module.eks_cluster.eks_cluster_id
-# }
-
 provider "kubernetes" {
   host                   = module.my-eks.cluster_endpoint
   cluster_ca_certificate = "${base64decode(module.my-eks.kubeconfig-certificate-authority-data)}"
@@ -24,8 +20,6 @@ provider "kubernetes" {
       command     = "aws"
   }
 }
-
-
 
 provider "helm" {
   kubernetes {
