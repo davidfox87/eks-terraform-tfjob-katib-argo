@@ -1,5 +1,13 @@
 provider "aws" {
+  profile = "default"
   region = "us-west-1"
+
+  default_tags {
+    tags = {
+      Environment               = "dev"
+      mlops-platform            = "k8s-argo-kubeflow"
+    }
+  }
 }
 
 # data "aws_eks_cluster_auth" "this" {

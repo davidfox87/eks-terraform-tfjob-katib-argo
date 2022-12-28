@@ -13,6 +13,9 @@ spec:
   parallelTrialCount: 2
   maxTrialCount: 4
   maxFailedTrialCount: 2
+  metricsCollectorSpec:
+    collector:
+      kind: StdOut
   parameters:
     - name: learning_rate
       parameterType: double
@@ -41,6 +44,9 @@ spec:
           Worker:
             replicas: 1
             template:
+              metadata:
+                annotations:
+                  sidecar.istio.io/inject: "false"
               spec:
                 containers:
                   - name: tensorflow
@@ -51,14 +57,7 @@ spec:
                     - --log_dir=/logs
                     - "--learning_rate=${trialParameters.learningRate}"
                     - "--batch_size=${trialParameters.batchSize}"
-                    image: foxy7887/mnist-model:v30
+                    image: foxy7887/mnist-model:v31
                     workingDir: /opt
-                    volumeMounts:
-                    - mountPath: /logs
-                      name: data-volume
-                volumes:
-                  - name: data-volume
-                    persistentVolumeClaim:
-                      claimName: pvc-tensorboard
                 restartPolicy: Never
 

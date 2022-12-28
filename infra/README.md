@@ -98,6 +98,12 @@ kubectl apply -f apps.yaml
 Hope for the best...
 
 
+# submit a tuning job to Katib
+```
+kubectl apply -f mnist-random.yaml
+kubectl get po -n kubeflow 
+kubectl describe po/tfjob-mnist-8h999rbj-worker-0 -n kubeflow
+```
 ## Clean up your workspace
 
 Delete the application in argo-cd

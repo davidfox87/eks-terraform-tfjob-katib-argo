@@ -22,6 +22,9 @@ spec:
   parallelTrialCount: 2
   maxTrialCount: 10
   maxFailedTrialCount: 1
+  metricsCollectorSpec:
+    collector:
+      kind: StdOut
   parameters:
     - name: lr
       parameterType: double

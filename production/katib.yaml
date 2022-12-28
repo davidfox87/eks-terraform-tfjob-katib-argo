@@ -7,14 +7,10 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: production
-  sources:
+  source:
     - path: apps/katib/overlays/production/
       repoURL: https://github.com/davidfox87/mnist-tfjob-katib.git
       targetRevision: HEAD
-    - path: apps/training-operator
-      repoURL: https://github.com/davidfox87/mnist-tfjob-katib.git
-      targetRevision: HEAD
-
   destination:
     server: https://kubernetes.default.svc
     namespace: kubeflow
