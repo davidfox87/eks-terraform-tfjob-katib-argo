@@ -7,7 +7,7 @@ resource "kubernetes_storage_class_v1" "efs_sc" {
   parameters = {
     provisioningMode = "efs-ap"
     fileSystemId =  aws_efs_file_system.efs_data.id
-    directoryPerms = "775" # rwx for user, group, and rx for others
+    directoryPerms = "777" # rwx for user, group, and rx for others
     gidRangeStart = "1000" # optional
     gidRangeEnd = "2000" # optional
     # assign a gid of 1500 to the pod and container using k8s securityContext

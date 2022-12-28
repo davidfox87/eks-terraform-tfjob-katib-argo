@@ -1,8 +1,11 @@
 - op: add
   path: /spec/template/spec/containers/0/securityContext
   value: 
+    runAsUser: 1500
     runAsGroup: 1500
 - op: add
-  path: /spec/securityContext
+  path: /spec/template/spec/securityContext
   value: 
+    runAsUser: 1500
     runAsGroup: 1500
+    fsGroup: 1500
