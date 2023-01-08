@@ -10,3 +10,15 @@ variable "region" {
   default = "us-west-1"
 }
 
+variable "admin_password" {
+  type = string
+  description = "password for argocd"
+}
+variable "insecure" {
+  type = bool
+}
+variable "argocd_values_file" {
+  type = string
+  description = "location of values.yaml for helm install"
+  default = "values.yaml"
+}
