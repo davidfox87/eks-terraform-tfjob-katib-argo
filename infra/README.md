@@ -1,4 +1,8 @@
 # Deploying an AWS EKS cluster
+First set aws S3 as our terraform backend, which will store our tf state
+https://technology.doximity.com/articles/terraform-s3-backend-best-practices
+
+
 Our AWS infrastructure will consist of the following:
 
 - EKS Cluster: AWS managed Kubernetes cluster of master servers
