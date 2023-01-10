@@ -41,3 +41,16 @@ provider "kubernetes" {
   config_context = "minikube"
 }
 
+provider "helm" {
+ kubernetes {
+  config_path    = "~/.kube/config"
+  config_context = "minikube"
+ }
+}
+# provider "helm" {
+#   kubernetes {
+#     host                   = module.my-eks.cluster_endpoint
+#     cluster_ca_certificate = base64decode(module.my-eks.kubeconfig-certificate-authority-data)
+
+#   }
+# }

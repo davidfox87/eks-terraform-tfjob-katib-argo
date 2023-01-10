@@ -120,3 +120,10 @@ terraform destroy
 
 
 
+
+
+# install Hashocrp vault for secrets management
+```
+ helm repo add hashicorp https://helm.releases.hashicorp.com
+
+ ```

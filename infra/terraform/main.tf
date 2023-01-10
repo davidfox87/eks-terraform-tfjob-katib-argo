@@ -35,10 +35,10 @@
 #   source = "./modules/tf-state"
 # }
 
-# module "argocd" {
-#   source = "./modules/argocd"
+module "argocd" {
+  source = "./modules/argocd"
 
-#   admin_password = var.admin_password
-#   insecure       = var.insecure
-#   #values_file    = var.argocd_values_file
-# }
+  admin_password = var.admin_password
+  insecure       = var.insecure
+  #values_file    = var.argocd_values_file
+}
