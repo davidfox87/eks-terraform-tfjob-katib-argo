@@ -11,6 +11,7 @@ spec:
     server: {{ .Values.spec.destination.server }}
   project: default
   source:
-    path: guestbook
-    repoURL: https://github.com/argoproj/argocd-example-apps
-    targetRevision: HEAD
+    path: {{ .Values.spec.source.path }}
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+
