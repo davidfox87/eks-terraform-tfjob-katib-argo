@@ -22,3 +22,9 @@ variable "admin_password" {
   type        = string
   default     = ""
 }
+
+variable "app_of_apps_values_file" {
+  description = "The name of the ArgoCD app of apps helm chart values file to use"
+  type        = string
+  default     = "values.yaml"
+}

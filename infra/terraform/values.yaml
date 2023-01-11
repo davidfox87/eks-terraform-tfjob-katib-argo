@@ -1,7 +1,11 @@
+metadata:
+  name: apps
 spec:
   destination:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/davidfox87/eks-terraform-tfjob-katib-argo.git
     targetRevision: HEAD
-    path: apps/argo-workflows/overlays/staging
+    path: production
+project:
+  name: my-k8s-test

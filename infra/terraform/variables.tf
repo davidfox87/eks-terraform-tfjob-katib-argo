@@ -13,9 +13,11 @@ variable "region" {
 variable "admin_password" {
   type = string
   description = "password for argocd"
+  default = "password"
 }
 variable "insecure" {
   type = bool
+  default = true
 }
 variable "argocd_values_file" {
   type = string

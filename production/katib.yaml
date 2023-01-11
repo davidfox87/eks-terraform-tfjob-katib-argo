@@ -9,7 +9,7 @@ spec:
   project: production
   source:
     - path: apps/katib/overlays/production/
-      repoURL: https://github.com/davidfox87/mnist-tfjob-katib.git
+      repoURL: https://github.com/davidfox87/eks-terraform-tfjob-katib-argo.git
       targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
