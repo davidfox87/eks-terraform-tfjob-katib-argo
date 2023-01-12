@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: production
+  project: my-k8s-test
   source:
     - path: apps/katib/overlays/production/
       repoURL: https://github.com/davidfox87/eks-terraform-tfjob-katib-argo.git
