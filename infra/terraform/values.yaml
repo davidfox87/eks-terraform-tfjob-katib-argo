@@ -8,4 +8,4 @@ spec:
     targetRevision: HEAD
     path: production
 project:
-  name: my-k8s-test
+  name: default

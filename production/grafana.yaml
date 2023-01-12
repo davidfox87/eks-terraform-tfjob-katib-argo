@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: my-k8s-test
+  project: default
   source:
     chart: grafana
     repoURL: https://grafana.github.io/helm-charts
