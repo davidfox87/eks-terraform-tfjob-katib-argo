@@ -22,5 +22,5 @@ variable "insecure" {
 variable "argocd_values_file" {
   type = string
   description = "location of values.yaml for helm install"
-  default = "values.yaml"
+  default = "argocd_apps_values.yaml"
 }

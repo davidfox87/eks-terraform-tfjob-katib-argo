@@ -1,0 +1,72 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  project: default
+  source:
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    targetRevision: 34.1.1
+    helm:
+      skipCrds: true
+      values: |-
+        alertmanager:
+          #Attaching external AM configuration using alertmanagerConfig CRD
+          alertmanagerSpec:
+            alertmanagerConfigSelector:
+              matchLabels:
+                alertmanagerConfig: "true"
+        prometheus:
+           # Adding an ingress resource for Prometheus GUI
+          ingress:
+            enabled: true
+            hosts:
+              - prometheus-demo.example.com
+            paths:
+              - /
+          prometheusSpec:
+            serviceMonitorSelector:
+              matchLabels:
+                release: kube-prometheus-stack
+            # Configure Persistent Volume for Prometheus storage
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: gp2
+                  accessModes:
+                  - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 5Gi
+            # Adding a common custom label for all the scrapped metrics
+            externalLabels:
+              clusterName: "Prometheus-Demo"
+        grafana:
+          # Adding an ingress resource for Grafana GUI
+          ingress:
+            enabled: true
+            hosts:
+              - grafana-demo.example.com
+            paths: /
+          # Configure Persistent Volume for Grafana storage
+          persistence:
+            enabled: true
+            type: statefulset
+            storageClassName: gp2
+            accessModes:
+            - ReadWriteOnce
+            size: 3Gi
+            finalizers:
+            - kubernetes.io/pvc-protection
+    chart: kube-prometheus-stack
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  syncOptions:
+    - CreateNamespace=true

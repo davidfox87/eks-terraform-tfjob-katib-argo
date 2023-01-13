@@ -120,10 +120,16 @@ terraform destroy
 
 
 
-
-
-# install Hashocrp vault for secrets management
+# we install Prometheus and Grafana via kube-prometheus-stack
 ```
- helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
- ```
+kubectl create namespace monitoring
+
+helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring
+
+kubectl -n monitoring get secret prometheus-grafana  -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+kubectl port-forward svc/prometheus-grafana  -n monitoring 8080:80
+
+```
