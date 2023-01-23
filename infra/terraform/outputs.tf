@@ -21,3 +21,8 @@
 #   description = "Kubernetes Cluster Name"
 #   value       = var.cluster-name
 # }
+
+output "test" {
+    description = "testing"
+    value = "hello"
+}

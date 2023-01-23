@@ -137,4 +137,10 @@ kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/dow
 
 
 
+terraform output -json | jq -r .kubeconfig.value >> .kubeconfig
+
+artifacts:
+    paths:
+        .kubeconfig
+
 

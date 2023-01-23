@@ -18,7 +18,7 @@ all_availability_zones = true
 resource "aws_subnet" "public" {
   count = 2
 
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+  availability_zone = var.az[count.index]
   cidr_block        = "10.0.${count.index}.0/24"
   vpc_id            = "${aws_vpc.vpc.id}"
 
@@ -32,7 +32,7 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   count = 2
 
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+  availability_zone = var.az[count.index]
   cidr_block        = "10.0.${count.index+2}.0/24" # start the private subnet addresses right after the public ones
   vpc_id            = "${aws_vpc.vpc.id}"
 
