@@ -1,19 +1,3 @@
-provider "helm" {
-    kubernetes {
-    host                   = data.aws_eks_cluster.example.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.example.certificate_authority[0].data)
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", var.cluster-name]
-      command     = "aws"
-    }
-  }
-}
-
-# The Terraform Helm provider contains the helm_release resource that deploys 
-# a Helm chart to a Kubernetes cluster. The helm_release resource specifies the
-# chart name and the configuration variables for your deployment.
-
 # Installs helm chart for the aws-load-balancer-controller.
 resource "helm_release" "ingress" {
 
@@ -24,7 +8,7 @@ resource "helm_release" "ingress" {
   namespace = "kube-system"
   set {
     name  = "region"
-    value = "us-west-1"
+    value = "us-west-2"
   }
   set {
     name  = "vpcId"
@@ -32,7 +16,7 @@ resource "helm_release" "ingress" {
   }
   set {
     name  = "image.repository"
-    value =  "602401143452.dkr.ecr.us-west-1.amazonaws.com/amazon/aws-load-balancer-controller"
+    value =  "602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-load-balancer-controller"
   }
   set {
     name  = "clusterName"
@@ -47,6 +31,10 @@ resource "helm_release" "ingress" {
     name  = "serviceAccount.name"
     value =  "aws-load-balancer-controller"
   }
+
+  depends_on = [
+    kubernetes_service_account.eks-service-account
+  ]
 }
 
 
@@ -56,12 +44,11 @@ resource "helm_release" "kubernetes_efs_csi_driver" {
   name        = "aws-efs-csi-driver"
   repository  = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
   chart       = "aws-efs-csi-driver"
-  version     = 1.2
 
   namespace = "kube-system"
   set {
     name  = "image.repository"
-    value = "602401143452.dkr.ecr.us-west-1.amazonaws.com/eks/aws-efs-csi-driver"
+    value = "602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/aws-efs-csi-driver"
   }
   set {
     name  = "controller.serviceAccount.create"
@@ -71,4 +58,8 @@ resource "helm_release" "kubernetes_efs_csi_driver" {
     name  = "controller.serviceAccount.name"
     value = local.k8s_service_account_name_efs-csi-driver
   }
+
+  depends_on = [
+    kubernetes_service_account.efs-csi-driver-service-account
+  ]
 }

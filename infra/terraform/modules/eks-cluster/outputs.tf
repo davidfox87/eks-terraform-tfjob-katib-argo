@@ -41,22 +41,14 @@ output "cluster_name" {
   value = aws_eks_cluster.demo.name
 }
 
-output "cluster_endpoint" {
-    value = aws_eks_cluster.demo.endpoint
-}
-
-# output "cluster_security_group_id" {
-#     value = aws_security_group.cluster_security_group_id.id
-# }
 
 output "cluster_oidc_issuer" {
   value = aws_eks_cluster.demo.identity[0].oidc[0].issuer
 }
 
-output "kubeconfig-certificate-authority-data" {
+output "ca" {
   value = aws_eks_cluster.demo.certificate_authority[0].data
 }
-
 output "efs-sg-rule-id" {
   value = aws_security_group.allow_eks_cluster.id
 }
@@ -64,3 +56,10 @@ output "efs-sg-rule-id" {
 output "iam-oidc-provider-url" {
   value = aws_iam_openid_connect_provider.eks-cluster.url
 }
+
+output "worker_role" {
+  value = aws_iam_role.workernodes.arn
+}
+
+
+

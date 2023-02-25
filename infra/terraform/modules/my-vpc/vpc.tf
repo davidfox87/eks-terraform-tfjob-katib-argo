@@ -1,101 +1,145 @@
+
 # to understand the special tags in subnets and vpc see
 # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
 resource "aws_vpc" "vpc" {
-  cidr_block       = "10.0.0.0/16"
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  cidr_block            = var.cidr
+  enable_dns_hostnames  = true
+  enable_dns_support    = true
   tags = {
-     "Name"                                       = "devops-test",
-     "kubernetes.io/cluster/${var.cluster-name}"  = "shared",
-    }
-
+     "Name"  = var.name,
+  }
 }
 
-data "aws_availability_zones" "available" {
-all_availability_zones = true
-}
 
 resource "aws_subnet" "public" {
-  count = 2
+  count = length(var.public_subnets)
 
-  availability_zone = var.az[count.index]
-  cidr_block        = "10.0.${count.index}.0/24"
-  vpc_id            = "${aws_vpc.vpc.id}"
+  vpc_id                          = aws_vpc.vpc.id
+  cidr_block                      = element(var.public_subnets, count.index)
+  availability_zone               = element(var.azs, count.index)
+  map_public_ip_on_launch         = true
 
-  tags = {
-     "Name"= "devops-test",
-     "kubernetes.io/cluster/${var.cluster-name}"= "shared",
-     "kubernetes.io/role/elb" = "1" # This is so that Kubernetes knows to use only the subnets that were specified for external load balancers.
-  }
+  tags = merge(
+    {
+      Name = try(
+        var.public_subnet_names[count.index],
+        format("${var.name}-${var.public_subnet_suffix}-%s", element(var.azs, count.index))
+      )
+    },
+    var.public_subnet_tags,
+  )
 }
+
 
 resource "aws_subnet" "private" {
-  count = 2
+  count = length(var.private_subnets)
 
-  availability_zone = var.az[count.index]
-  cidr_block        = "10.0.${count.index+2}.0/24" # start the private subnet addresses right after the public ones
-  vpc_id            = "${aws_vpc.vpc.id}"
+  vpc_id                          = aws_vpc.vpc.id
+  cidr_block                      = element(var.private_subnets, count.index)
+  availability_zone               = element(var.azs, count.index)
+  map_public_ip_on_launch         = false
 
-  tags = {
-     "Name"                                      = "devops-test",
-     "kubernetes.io/cluster/${var.cluster-name}"  = "shared",
-    }
-
+  tags = merge(
+    {
+      Name = try(
+        var.private_subnet_names[count.index],
+        format("${var.name}-${var.private_subnet_suffix}-%s", element(var.azs, count.index))
+      )
+    },
+    var.private_subnet_tags,
+  )
 }
 
 
-resource "aws_internet_gateway" "mygateway" {
+resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.vpc.id
-  tags = {
-    Name = "devops-test"
+
+  tags = { 
+      "Name" = var.name 
   }
 }
 
-resource "aws_route_table" "my_table" {
+resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.mygateway.id
+  tags = { 
+    "Name" = "${var.name}-${var.public_subnet_suffix}" 
   }
-
 }
-resource "aws_route_table_association" "rta_subnet_public" {
-  count = 2
+
+resource "aws_route" "public_internet_gateway" {
+  count = length(var.public_subnets)
+
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.this.id
+
+  timeouts {
+    create = "5m"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  count = length(var.public_subnets)
+
   subnet_id      = aws_subnet.public[count.index].id
-
-  route_table_id = aws_route_table.my_table.id
+  route_table_id = aws_route_table.public.id
 }
+
+
+
+
+
+
+
+
 
 
 # Elastic-IP (eip) for NAT
 resource "aws_eip" "nat_eip" {
   vpc        = true
+  tags = { 
+      "Name" = var.name 
+  }
 }
 
 # NAT gateway sits in first public subnet
-resource "aws_nat_gateway" "natgw" {
+resource "aws_nat_gateway" "this" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = "${aws_subnet.public.*.id[0]}"
 
-  tags = {
-    Name        = "nat gw"
-    Environment = "${var.environment}"
+  tags = { 
+      "Name" = var.name 
   }
+  depends_on = [
+      aws_internet_gateway.this
+  ]
 }
 
-resource "aws_route_table" "my_nat_table" {
+resource "aws_route" "private_nat_gateway" {
+
+  route_table_id         = aws_route_table.private.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.this.id
+
+  timeouts {
+    create = "5m"
+  }
+}
+resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.natgw.id
-  }
 
+  tags = { 
+    "Name" = "${var.name}-${var.private_subnet_suffix}" 
+  }
 }
-resource "aws_route_table_association" "rta_subnet_private" {
-  count = 2
-  subnet_id      = "${aws_subnet.private.*.id[count.index]}"
-  route_table_id = aws_route_table.my_nat_table.id
+
+
+
+resource "aws_route_table_association" "private" {
+  count = length(var.private_subnets)
+
+  subnet_id = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private.id
 }
 
 

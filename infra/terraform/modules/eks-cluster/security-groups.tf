@@ -11,7 +11,7 @@ resource "aws_security_group" "cluster_security_group" {
   }
 
   tags = {
-    Name = "terraform-eks-demo"
+    "kubernetes.io/cluster/${var.cluster-name}" = "owned"
   }
 }
 
@@ -29,7 +29,7 @@ resource "aws_security_group" "allow_eks_cluster" {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = ["${aws_security_group.cluster_security_group.id}"]
   }
 
   egress {

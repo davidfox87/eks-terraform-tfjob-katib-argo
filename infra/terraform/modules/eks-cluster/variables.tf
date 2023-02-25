@@ -5,7 +5,11 @@ variable "cluster-name" {
 
 variable "subnets" {
   type  = list
-  description = "vpc subnets"
+  description = "private subnets"
+}
+variable "control_plane_subnet_ids" {
+  type  = list
+  description = "public subnets"
 }
 
 variable "vpc_id" {
@@ -13,9 +17,9 @@ variable "vpc_id" {
   description = "vpc id"
 }
 
-variable "kubernetes_version" {
+variable "cluster_version" {
   type    = string
-  default = "1.21"
+  default = "1.24"
 }
 
 variable "role_policy_arns" {
@@ -24,12 +28,6 @@ variable "role_policy_arns" {
   default     = {}
 }
 
-
-
-variable "cluster_name" {
-  type    = string
-  default = "test-cluster"
-}
 
 variable "min_node_count" {
   type    = number
@@ -41,45 +39,48 @@ variable "max_node_count" {
   default = 9
 }
 
-variable "machine_type" {
+variable "instance_type" {
   type    = string
   default = "t2.medium"
 }
 
 variable "region" {
   type    = string
-  default = "us-west-1"
+  default = "us-west-2"
 }
-
 
 variable "addons" {
+  description = "Map of cluster addon configurations to enable for the cluster. Addon name can be the map keys or set with `name`"
+  type        = any
+  default     = {}
+}
+
+
+#### aws-auth #####
+
+variable "map_accounts" {
+  description = "Additional AWS account numbers to add to the aws-auth configmap."
+  type        = list(string)
+  default     = []
+}
+
+variable "map_additional_roles" {
+  description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
-    name    = string
-    version = string
+    rolearn  = string
+    username = string
+    groups   = list(string)
   }))
-
-  default = [
-    {
-      name    = "kube-proxy"
-      version = "v1.21.2-eksbuild.2"
-    },
-    {
-      name    = "vpc-cni"
-      version = "v1.10.1-eksbuild.1"
-    },
-    {
-      name    = "coredns"
-      version = "v1.8.4-eksbuild.1"
-    },
-    {
-      name    = "aws-ebs-csi-driver"
-      version = "v1.4.0-eksbuild.preview"
-    }
-  ]
+  default = []
 }
 
-variable "storage_class_name" {
-    description = "name of storage class"
-    type        = string
-    default     = "efs-sc"
+variable "map_users" {
+  description = "Additional IAM users to add to the aws-auth configmap."
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
 }
+

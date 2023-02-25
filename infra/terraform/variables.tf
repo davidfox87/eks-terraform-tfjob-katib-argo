@@ -7,7 +7,7 @@ variable "cluster-name" {
 variable "region" {
   description = "AWS region"
   type        = string
-  default = "us-west-1"
+  default = "us-west-2"
 }
 
 variable "admin_password" {
@@ -19,8 +19,9 @@ variable "insecure" {
   type = bool
   default = true
 }
-variable "argocd_values_file" {
+
+variable "argocd-url" {
+  description = "Route53 URL to access argocd UI"
   type = string
-  description = "location of values.yaml for helm install"
-  default = "argocd_apps_values.yaml"
+  default = "ds-argocd.mlops-playground.com"
 }

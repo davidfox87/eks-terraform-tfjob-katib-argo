@@ -1,14 +1,11 @@
 terraform {
   required_version = ">= 1.3.6"
   # A backend defines where Terraform stores its state data files.
-  # backend "s3" {
-  #   bucket         = "tf-s3-backend-7887"
-  #   key            = "state/terraform.tfstate"
-  #   region         = "us-west-1"
-  #   encrypt        = true
-  #   kms_key_id     = "alias/terraform-bucket-key"
-  #   dynamodb_table = "terraform-state"
-  # }
+  backend "s3" {
+    bucket         = "tf-state-880572800141"
+    key            = "state/terraform.tfstate"
+    region         = "us-west-2"
+  }
 
   required_providers {
     helm = {

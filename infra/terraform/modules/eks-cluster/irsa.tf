@@ -1,28 +1,14 @@
-
-data "aws_eks_cluster" "example" {
-  name = aws_eks_cluster.demo.id
-}
-data "aws_eks_cluster_auth" "example" {
-  name = aws_eks_cluster.demo.id
-}
-
-# Get information about the TLS certificates securing a host.
-data "tls_certificate" "cluster_oidc_issuer_url" {
-  url = aws_eks_cluster.demo.identity[0].oidc[0].issuer
-}
-
 resource "aws_iam_openid_connect_provider" "eks-cluster" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.cluster_oidc_issuer_url.certificates[0].sha1_fingerprint]
   url             = data.tls_certificate.cluster_oidc_issuer_url.url
 }
-
 resource "aws_iam_policy" "AWSLoadBalancerControllerIAMPolicy" {
   name        = "AWSLoadBalancerControllerIAMPolicy"
   description = "Worker policy for the ALB Ingress"
-
   policy = file("${path.module}/aws-alb-controller-iam_policy.json")
 }
+
 module "iam_assumable_role_admin" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "~> 4.0"
@@ -43,7 +29,6 @@ module "iam_assumable_role_admin" {
 }
 
 # create a k8s service account that has the IRSA attached
-
 resource "kubernetes_service_account" "eks-service-account" {
   metadata {
     name = local.k8s_service_account_name # This is used as the serviceAccountName in the spec section of the k8 pod manifest
@@ -58,7 +43,6 @@ resource "kubernetes_service_account" "eks-service-account" {
     }
   }
 }
-
 
 module "iam_assumable_role_s3_access" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
@@ -119,9 +103,6 @@ resource "kubernetes_service_account" "s3-access-service-account" {
 
 
 
-
-
-
 resource "aws_iam_policy" "AmazonEKS_EFS_CSI_Driver_Policy" {
   name        = "AmazonEKS_EFS_CSI_Driver_Policy"
   description = "Worker policy for access to EFS"
@@ -152,9 +133,9 @@ resource "kubernetes_service_account" "efs-csi-driver-service-account" {
       "app.kubernetes.io/managed-by" = "Helm"
     }
     annotations = {
-      "meta.helm.sh/release-namespace"   = "kube-system"
-      "meta.helm.sh/release-name"   = "aws-efs-csi-driver"
-      "eks.amazonaws.com/role-arn"  = module.iam_assumable_role_efs_access.iam_role_arn
+      "meta.helm.sh/release-namespace"    = "kube-system"
+      "meta.helm.sh/release-name"         = "aws-efs-csi-driver"
+      "eks.amazonaws.com/role-arn"        = module.iam_assumable_role_efs_access.iam_role_arn
     }
   }
 }
