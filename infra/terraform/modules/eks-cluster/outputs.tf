@@ -49,9 +49,9 @@ output "cluster_oidc_issuer" {
 output "ca" {
   value = aws_eks_cluster.demo.certificate_authority[0].data
 }
-output "efs-sg-rule-id" {
-  value = aws_security_group.allow_eks_cluster.id
-}
+# output "efs-sg-rule-id" {
+#   value = aws_security_group.allow_eks_cluster.id
+# }
 
 output "iam-oidc-provider-url" {
   value = aws_iam_openid_connect_provider.eks-cluster.url
