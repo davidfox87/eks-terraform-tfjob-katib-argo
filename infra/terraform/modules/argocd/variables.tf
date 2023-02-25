@@ -1,4 +1,5 @@
 
+
 variable "enable_dex" {
   type        = bool
   description = "Enabled the dex server?"
@@ -11,20 +12,30 @@ variable "insecure" {
   default     = false
 }
 
-variable "values_file" {
-  description = "The name of the ArgoCD helm chart values file to use"
-  type        = string
-  default     = "values.yaml"
-}
 
 variable "admin_password" {
   description = "Default Admin Password"
   type        = string
   default     = ""
 }
+variable "argocd_ingress_enabled" {
+  description = "Create an ingress for argocd UI or not?"
+  type        = bool
+  default     = false
+}
 
-variable "app_of_apps_values_file" {
-  description = "The name of the ArgoCD app of apps helm chart values file to use"
+variable "argocd_server_host" {
+  description = "host name to access argocd-server ui"
   type        = string
-  default     = "argocd_apps_values.yaml"
+  default     = "ds-argocd.dishtv.technology"
+}
+
+variable "ingress_alb_security_groups" {
+  description = "sg for ingress-managed ALB"
+  type = list(string)
+}
+
+variable "acm_certificate_arn" {
+  description = "AWS ACM Certificate ARN to attach to ingress annotations"
+  type = string
 }
