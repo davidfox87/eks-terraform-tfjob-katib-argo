@@ -25,6 +25,7 @@ module "vpc" {
 
 module "my-eks" {
   source = "./modules/eks-cluster"
+  depends_on = [module.vpc]
   cluster-name                    = var.cluster-name
   cluster_version                 = "1.24"
   vpc_id                          = module.vpc.vpc_id
@@ -56,22 +57,18 @@ module "my-eks" {
       groups    = [""] # add to groups using rbac roles and role bindings
     }
   ]
-  
 }
 
 
 module "argocd" {
   source = "./modules/argocd"
-
+  depends_on = [module.my-eks]
   admin_password = var.admin_password
   insecure       = var.insecure
   argocd_ingress_enabled = true
   argocd_server_host = "ds-argocd.mlops-playground.com"
   acm_certificate_arn = "arn:aws:acm:us-west-2:880572800141:certificate/1d80b250-e912-4929-923f-8cdc11b1b19c"
   ingress_alb_security_groups = [module.vpc.alb-sg]
-  
-  depends_on = [
-    module.my-eks
-  ]
+
 }
 
