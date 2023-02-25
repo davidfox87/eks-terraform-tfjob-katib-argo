@@ -68,7 +68,7 @@ module "argocd" {
   argocd_ingress_enabled = true
   argocd_server_host = "ds-argocd.mlops-playground.com"
   acm_certificate_arn = "arn:aws:acm:us-west-2:880572800141:certificate/1d80b250-e912-4929-923f-8cdc11b1b19c"
-  ingress_alb_security_groups = [module.network.alb-sg]
+  ingress_alb_security_groups = [module.vpc.alb-sg]
   
   depends_on = [
     module.my-eks

@@ -21,10 +21,10 @@ resource "helm_release" "argocd" {
                                                 "alb.ingress.kubernetes.io/ssl-redirect" = "443"
                                                 "alb.ingress.kubernetes.io/listen-ports" = "'[{\"HTTP\": 80}, {\"HTTPS\":443}]'"
                                                 "alb.ingress.kubernetes.io/group.name" = "ds-alb"
+                                                #"alb.ingress.kubernetes.io/security-groups" =  join(",", var.ingress_alb_security_groups)
+                                                "alb.ingress.kubernetes.io/tags" =  "Environment=dev,mlops-platform=k8s-argo-kubeflow"
                                               }
           argocd_server_host                = var.argocd_server_host
-          tags                              = "Environment=dev,mlops-platform=k8s-argo-kubeflow"
-          # ingress_alb_security_groups = join(",", var.ingress_alb_security_groups)
       })]
 
   # set_sensitive {
